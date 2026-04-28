@@ -1,0 +1,2270 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #000000;
+    background-color: #f8f8f8;
+    overflow-x: hidden;
+}
+
+/* Main announcement container */
+.pf-lorax-ann {
+    width: 100%;
+    background-color: #016a4c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 20px;
+    position: relative;
+}
+
+/* Sale timer container */
+.pf-lorax-sale-timer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pf-lorax-sale-timer-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Sale timer text section */
+.pf-lorax-sale-timer-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pf-lorax-sale-timer-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pf-lorax-sale-timer-subtitle {
+    font-size: 1rem;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+/* Timer main section */
+.pf-lorax-sale-timer-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+/* Timer item */
+.pf-lorax-sale-timer-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 4px 6px;
+    min-width: 40px;
+    transition: background-color 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pf-lorax-sale-timer-item:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.pf-lorax-sale-timer-item-time {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.pf-lorax-sale-timer-item-sub {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+/* Timer separator */
+.pf-lorax-sale-timer-seperator {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1;
+    margin: 0 2px;
+    opacity: 0.8;
+}
+
+/* Desktop styles (larger screens) */
+@media (min-width: 768px) {
+    .pf-lorax-ann {
+        padding: 15px 20px;
+    }
+    
+    .pf-lorax-sale-timer-wrapper {
+        gap: 30px;
+    }
+    
+    .pf-lorax-sale-timer-title {
+        font-size: 1.1rem;
+    }
+    
+    .pf-lorax-sale-timer-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .pf-lorax-sale-timer-main {
+        gap: 10px;
+    }
+    
+    .pf-lorax-sale-timer-item {
+        min-width: 45px;
+        padding: 6px 8px;
+    }
+    
+    .pf-lorax-sale-timer-item-time {
+        font-size: 1.2rem;
+    }
+    
+    .pf-lorax-sale-timer-item-sub {
+        font-size: 0.7rem;
+    }
+    
+    .pf-lorax-sale-timer-seperator {
+        font-size: 1.2rem;
+        margin: 0 4px;
+    }
+}
+
+/* Mobile styles (smaller screens) */
+@media (max-width: 768px) {
+    .pf-lorax-ann {
+        padding: 8px 10px;
+    }
+    
+    .pf-lorax-sale-timer-wrapper {
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+    
+    .pf-lorax-sale-timer-text {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        flex-shrink: 1;
+    }
+    
+    .pf-lorax-sale-timer-title {
+        font-size: 0.9rem;
+    }
+    
+    .pf-lorax-sale-timer-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .pf-lorax-sale-timer-main {
+        gap: 2px;
+        flex-shrink: 0;
+    }
+    
+    .pf-lorax-sale-timer-item {
+        min-width: 38px;
+        padding: 4px 5px;
+    }
+    
+    .pf-lorax-sale-timer-item-time {
+        font-size: 1rem;
+    }
+    
+    .pf-lorax-sale-timer-item-sub {
+        font-size: 0.6rem;
+    }
+    
+    .pf-lorax-sale-timer-seperator {
+        font-size: 1rem;
+        margin: 0 1px;
+    }
+}
+
+/* Extra small mobile screens */
+@media (max-width: 480px) {
+    .pf-lorax-ann {
+        padding: 6px 8px;
+    }
+    
+    .pf-lorax-sale-timer-wrapper {
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+    
+    .pf-lorax-sale-timer-text {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1px;
+        flex-shrink: 1;
+    }
+    
+    .pf-lorax-sale-timer-title {
+        font-size: 0.8rem;
+    }
+    
+    .pf-lorax-sale-timer-subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .pf-lorax-sale-timer-main {
+        flex-shrink: 0;
+    }
+    
+    .pf-lorax-sale-timer-item {
+        min-width: 35px;
+        padding: 3px 4px;
+    }
+    
+    .pf-lorax-sale-timer-item-time {
+        font-size: 0.9rem;
+    }
+    
+    .pf-lorax-sale-timer-item-sub {
+        font-size: 0.55rem;
+    }
+    
+    .pf-lorax-sale-timer-seperator {
+        font-size: 0.9rem;
+    }
+}
+
+/* Main Bundle Container */
+.pf-lorax-buy {
+    width: 100%;
+    min-height: 100vh;
+    max-height: 100vh;
+    background-color: #f8f8f8;
+    overflow-y: auto;
+}
+
+.pf-lorax-buy.active {
+    display: block;
+}
+
+/* Header Section */
+.pf-lorax-buy-header {
+    width: 100%;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Header Announcement */
+.pf-lorax-buy-header-ann {
+    width: 100%;
+    background-color: #016a4c;
+    padding: 10px 20px;
+}
+
+.pf-lorax-buy-header-ann-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.pf-lorax-buy-header-se {
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+
+.pf-lorax-buy-header-offer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: white;
+    font-weight: 600;
+}
+
+.pf-lorax-buy-header-offer-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+/* Progress Section - Clean Rewrite */
+.pf-lorax-progress-section {
+    background-color: white;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.pf-lorax-progress-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pf-lorax-back-btn {
+    position: absolute;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.pf-lorax-back-btn:hover {
+    background-color: #016a4c;
+}
+
+.pf-lorax-back-btn:hover img {
+    filter: brightness(0) invert(1);
+}
+
+.pf-lorax-back-btn img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.pf-lorax-progress-steps {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.pf-lorax-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.pf-lorax-step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.pf-lorax-step.completed .pf-lorax-step-icon,
+.pf-lorax-step.active .pf-lorax-step-icon {
+    background-color: #016a4c;
+    color: white;
+}
+
+.pf-lorax-step-icon img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.pf-lorax-step-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    text-align: center;
+}
+
+.pf-lorax-step.completed .pf-lorax-step-title,
+.pf-lorax-step.active .pf-lorax-step-title {
+    color: #333;
+}
+
+/* Main Content */
+.pf-lorax-buy-main {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* Image Gallery */
+.pf-lorax-buy-images-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pf-lorax-buy-images-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.pf-lorax-buy-images-list {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.pf-lorax-buy-images-item-container {
+    min-width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.pf-lorax-buy-images-item {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.pf-lorax-buy-images-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.pf-lorax-buy-images-nav-left,
+.pf-lorax-buy-images-nav-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    pointer-events: all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pf-lorax-buy-images-nav-left {
+    left: 15px;
+}
+
+.pf-lorax-buy-images-nav-right {
+    right: 15px;
+}
+
+.pf-lorax-buy-images-nav-left:hover,
+.pf-lorax-buy-images-nav-right:hover {
+    background-color: white;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.pf-lorax-buy-images-nav-left::after {
+    content: '‹';
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+.pf-lorax-buy-images-nav-right::after {
+    content: '›';
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* Thumbnails */
+.pf-lorax-buy-images-thumbnails-wrapper {
+    width: 100%;
+}
+
+.pf-lorax-buy-images-thumbnails {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 5px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.pf-lorax-buy-images-thumbnails::-webkit-scrollbar {
+    display: none;
+}
+
+.pf-lorax-buy-images-thumbnails-item {
+    min-width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.pf-lorax-buy-images-thumbnails-item.active {
+    border-color: #016a4c;
+}
+
+.pf-lorax-buy-images-thumbnails-item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Shop Section */
+.pf-lorax-buy-shop-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.pf-lorax-buy-shop {
+    border-radius: 16px;
+    padding: 10px 15px;
+}
+
+/* Shop Notice */
+.pf-lorax-buy-shop-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.pf-lorax-buy-shop-notice-item {
+    text-align: center;
+}
+
+.pf-lorax-buy-shop-notice-subtitle {
+    font-size: 11px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.pf-lorax-buy-shop-notice-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.pf-lorax-buy-shop-notice-title.green {
+    color: #28a745;
+}
+
+.pf-lorax-buy-shop-notice-title.red {
+    color: #dc3545;
+}
+
+.pf-lorax-buy-shop-notice-divider {
+    width: 1px;
+    height: 30px;
+    background-color: #e0e0e0;
+}
+
+/* Shop Main */
+.pf-lorax-buy-shop-main {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.pf-lorax-buy-shop-title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pf-lorax-buy-shop-tb {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pf-lorax-buy-shop-tb-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #016a4c;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.pf-lorax-buy-shop-tb-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.pf-lorax-buy-shop-tb-pc {
+    color: #016a4c;
+    font-weight: 700;
+}
+
+.pf-lorax-buy-shop-sg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #016a4c;
+    font-size: 14px;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+}
+
+.pf-lorax-buy-shop-sg:hover {
+    opacity: 0.8;
+}
+
+.pf-lorax-buy-shop-sg-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* Shop Items List */
+.pf-lorax-buy-shop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pf-lorax-buy-shop-item-container {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #f8f8f8;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    position: relative;
+}
+
+.pf-lorax-buy-shop-item-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background: linear-gradient(180deg, #016a4c, #28a745);
+    transition: height 0.4s ease-out;
+    z-index: 10;
+    border-radius: 0 0 0 12px;
+}
+
+.pf-lorax-buy-shop-item-container.active::before {
+    height: 100%;
+}
+
+.pf-lorax-buy-shop-item-container.active {
+    border-color: #016a4c;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(1, 106, 76, 0.1);
+}
+
+.pf-lorax-buy-shop-item-container.just-added {
+    animation: fadeInBorder 0.5s ease-out;
+}
+
+@keyframes fadeInBorder {
+    from {
+        border-color: #e0e0e0;
+        box-shadow: 0 0 0 rgba(1, 106, 76, 0);
+    }
+    to {
+        border-color: #016a4c;
+        box-shadow: 0 4px 12px rgba(1, 106, 76, 0.1);
+    }
+}
+
+.pf-lorax-buy-shop-item {
+    position: relative;
+}
+
+/* Shop Item - Not Yet Added State */
+.pf-lorax-buy-shop-item-ny {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.pf-lorax-buy-shop-item-container:not(.active):hover .pf-lorax-buy-shop-item-ny {
+    background: linear-gradient(to right, rgba(1, 106, 76, 0.015), transparent);
+}
+
+.pf-lorax-buy-shop-item-ny-number {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.pf-lorax-buy-shop-item-container:not(.active):hover .pf-lorax-buy-shop-item-ny-number {
+    background-color: #d5d5d5;
+}
+
+.pf-lorax-buy-shop-item-container.active .pf-lorax-buy-shop-item-ny-number {
+    background-color: #016a4c;
+    color: white;
+    box-shadow: 0 4px 12px rgba(1, 106, 76, 0.3);
+}
+
+.pf-lorax-buy-shop-item-ny-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.pf-lorax-buy-shop-item-ny-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pf-lorax-upsell-highlight {
+    display: inline-block;
+}
+
+.pf-lorax-upsell-badge {
+    background: linear-gradient(135deg, #ff6b35, #ff8c42);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+}
+
+.pf-lorax-upsell-badge.best {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.pf-lorax-buy-shop-item-ny-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pf-lorax-upsell-pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pf-lorax-upsell-price {
+    font-size: 24px;
+    font-weight: 800;
+    color: #016a4c;
+    line-height: 1;
+}
+
+.pf-lorax-upsell-price-sub {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+}
+
+.pf-lorax-upsell-was {
+    font-size: 14px;
+    color: #999;
+    text-decoration: line-through;
+    font-weight: 500;
+}
+
+.pf-lorax-upsell-savings {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pf-lorax-upsell-discount {
+    background-color: #ff4444;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.pf-lorax-upsell-save {
+    font-size: 14px;
+    color: #28a745;
+    font-weight: 600;
+}
+
+.pf-lorax-buy-shop-item-ny-add {
+    flex-shrink: 0;
+}
+
+.pf-lorax-buy-shop-item-ny-add-button {
+    background-color: #016a4c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(1, 106, 76, 0.2);
+}
+
+.pf-lorax-buy-shop-item-ny-add-button:hover {
+    background-color: #014a36;
+    box-shadow: 0 4px 12px rgba(1, 106, 76, 0.3);
+}
+
+.pf-lorax-buy-shop-item-ny-add-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 4px rgba(1, 106, 76, 0.2);
+}
+
+/* Shop Item - Configuration State */
+.pf-lorax-buy-shop-item-conf {
+    padding: 20px;
+    display: none;
+    align-items: center;
+    gap: 20px;
+}
+
+.pf-lorax-buy-shop-item-container.active .pf-lorax-buy-shop-item-conf {
+    display: flex;
+}
+
+.pf-lorax-buy-shop-item-container:not(.active) .pf-lorax-buy-shop-item-ny {
+    display: flex;
+}
+
+.pf-lorax-buy-shop-item-container.active .pf-lorax-buy-shop-item-ny {
+    display: none;
+}
+
+.pf-lorax-buy-shop-item-conf-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.pf-lorax-buy-shop-item-conf-check {
+    flex-shrink: 0;
+}
+
+.pf-lorax-buy-shop-item-conf-check-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.pf-lorax-buy-shop-item-conf-product-image-container {
+    flex-shrink: 0;
+}
+
+.pf-lorax-buy-shop-item-conf-product-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.pf-lorax-buy-shop-item-conf-options {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+}
+
+.pf-lorax-buy-shop-item-conf-options-item {
+    flex: 1;
+}
+
+.pf-lorax-buy-shop-item-conf-options-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.pf-lorax-buy-shop-item-conf-options-item-color-select,
+.pf-lorax-buy-shop-item-conf-options-item-size-select {
+    position: relative;
+}
+
+.pf-lorax-buy-shop-item-conf-options-item-color-select select,
+.pf-lorax-buy-shop-item-conf-options-item-size-select select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg viewBox='0 0 4 5' xmlns='http://www.w3.org/2000/svg'><path d='m0 1 2 2 2-2' stroke='%23666' fill='none' fill-rule='evenodd'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+}
+
+.pf-lorax-buy-shop-item-conf-options-item-color-select select:focus,
+.pf-lorax-buy-shop-item-conf-options-item-size-select select:focus {
+    outline: none;
+    border-color: #016a4c;
+}
+
+/* Shop Checkout */
+.pf-lorax-buy-shop-atc {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 2px solid #f0f0f0;
+    position: relative;
+}
+
+.pf-lorax-buy-shop-atc::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #016a4c, #28a745);
+    transition: width 0.5s ease-out;
+}
+
+.pf-lorax-buy-shop-atc.price-updated::before {
+    width: 100%;
+}
+
+.pf-lorax-buy-shop-atc-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.pf-lorax-buy-shop-atc-shipping {
+    font-size: 16px;
+    color: #28a745;
+    font-weight: 600;
+}
+
+.pf-lorax-buy-shop-atc-price {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+}
+
+.pf-lorax-buy-shop-atc-price.price-updated .pf-lorax-buy-shop-atc-price-main {
+    animation: priceUpdate 0.4s ease-out;
+}
+
+@keyframes priceUpdate {
+    0% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.pf-lorax-buy-shop-atc-price-main {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.pf-lorax-buy-shop-atc-price-main::before {
+    content: '$';
+}
+
+.pf-lorax-buy-shop-atc-price-su {
+    font-size: 18px;
+    color: #999;
+    text-decoration: line-through;
+}
+
+.pf-lorax-buy-shop-atc-price-su::before {
+    content: '$';
+}
+
+.pf-lorax-buy-shop-atc-price-savings-container {
+    background-color: #ff4444;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pf-lorax-buy-shop-atc-button {
+    width: 100%;
+    background-color: #016a4c;
+    color: white;
+    border: 2px solid #028c76;
+    border-radius: 8px;
+    padding: 18px 24px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.pf-lorax-buy-shop-atc-button:hover {
+    background-color: #014a36;
+}
+
+.pf-lorax-buy-shop-atc-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    margin-left: auto;
+}
+
+/* Payment Icons */
+.pf-lorax-buy-shop-pi {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pf-lorax-buy-shop-pi-icons {
+    width: 80%;
+    height: auto;
+    opacity: 0.8;
+}
+
+/* Guarantees */
+.pf-lorax-buy-shop-gu {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.pf-lorax-buy-shop-gu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 120px;
+}
+
+.pf-lorax-buy-shop-gu-item-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.pf-lorax-buy-shop-gu-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.pf-lorax-buy-shop-gu-item-body {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Footer */
+.pf-lorax-footer.buy {
+    padding: 30px 20px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #e0e0e0;
+}
+
+.pf-lorax-footer-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.pf-lorax-footer-arr {
+    font-size: 14px;
+    color: #666;
+}
+
+.pf-lorax-footer-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.pf-lorax-footer-links-item {
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.pf-lorax-footer-links-item:hover {
+    color: #016a4c;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .pf-lorax-buy-header-ann-wrapper {
+        gap: 10px;
+        text-align: center;
+    }
+
+    .pf-lorax-progress-section {
+        padding: 15px 10px;
+    }
+
+    .pf-lorax-back-btn {
+        left: 10px;
+    }
+
+    .pf-lorax-progress-steps {
+        gap: 25px;
+    }
+
+    .pf-lorax-step-title {
+        font-size: 11px;
+    }
+
+    /* Mobile Sticky ATC */
+    .pf-lorax-buy-shop-atc {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        border-top: 1px solid #e0e0e0;
+        padding: 15px 20px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        margin-top: 0;
+    }
+
+    .pf-lorax-buy-shop-atc-info {
+        margin-bottom: 10px;
+    }
+
+    .pf-lorax-buy-shop-atc-shipping {
+        font-size: 12px;
+    }
+
+    .pf-lorax-buy-shop-atc-price-main {
+        font-size: 18px;
+    }
+
+    .pf-lorax-buy-shop-atc-price-su {
+        font-size: 14px;
+    }
+
+    .pf-lorax-buy-shop-atc-price-savings-container {
+        font-size: 10px;
+        padding: 1px 6px;
+    }
+
+    .pf-lorax-buy-shop-atc-button {
+        width: 100%;
+        padding: 16px 20px;
+        font-size: 18px;
+    }
+
+    .pf-lorax-buy-main {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 25px 10px;
+    }
+
+    .pf-lorax-buy-images-wrapper {
+        display: none;
+    }
+
+    .pf-lorax-buy-images-nav-left,
+    .pf-lorax-buy-images-nav-right {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .pf-lorax-buy-images-nav-left {
+        left: 10px;
+    }
+
+    .pf-lorax-buy-images-nav-right {
+        right: 10px;
+    }
+
+    .pf-lorax-buy-images-thumbnails-item {
+        min-width: 70px;
+        height: 70px;
+    }
+
+    .pf-lorax-buy-shop-notice {
+        gap: 15px;
+    }
+
+    .pf-lorax-buy-shop-title-wrapper {
+        align-items: center;
+        gap: 15px;
+    }
+
+    .pf-lorax-buy-shop-tb-text {
+        font-size: 16px;
+    }
+
+    .pf-lorax-buy-shop-item-conf {
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .pf-lorax-buy-shop-item-conf-left {
+        flex-direction: column;
+        gap: 12px;
+        align-items: start;
+    }
+
+    .pf-lorax-buy-shop-item-conf-product-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .pf-lorax-buy-shop-item-conf-options {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+    
+    .pf-lorax-buy-shop-item-conf-options-item {
+        width: 100%;
+    }
+    
+    .pf-lorax-buy-shop-item-conf-options-item-color-select select,
+    .pf-lorax-buy-shop-item-conf-options-item-size-select select {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px 30px 10px 10px;
+    }
+
+    .pf-lorax-buy-shop-atc-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .pf-lorax-buy-shop-atc-price {
+        align-self: stretch;
+        justify-content: space-between;
+    }
+
+    .pf-lorax-buy-shop-pi-icons {
+        width: 80%;
+    }
+
+    .pf-lorax-buy-shop-gu {
+        gap: 20px;
+    }
+
+    .pf-lorax-buy-shop-gu-item {
+        min-width: 100px;
+    }
+
+    .pf-lorax-footer-wrapper {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .pf-lorax-footer-links {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pf-lorax-buy-header-ann {
+        padding: 8px 10px;
+    }
+
+    .pf-lorax-buy-header-se,
+    .pf-lorax-buy-header-offer {
+        font-size: 13px;
+    }
+
+    .pf-lorax-progress-section {
+        padding: 12px 8px;
+    }
+
+    .pf-lorax-back-btn {
+        left: 8px;
+    }
+
+    .pf-lorax-progress-steps {
+        gap: 20px;
+    }
+
+    .pf-lorax-step-icon {
+        width: 25px;
+        height: 25px;
+        font-size: 12px;
+    }
+
+    .pf-lorax-step-icon img {
+        width: 10px;
+        height: 10px;
+        object-fit: contain;
+    }
+
+    .pf-lorax-step-title {
+        font-size: 10px;
+    }
+
+    /* Small Mobile Sticky ATC */
+    .pf-lorax-buy-shop-atc {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        border-top: 1px solid #e0e0e0;
+        padding: 10px 12px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        margin-top: 0;
+    }
+
+    .pf-lorax-buy-shop-atc-info {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .pf-lorax-buy-shop-atc-info {
+        margin-bottom: 8px;
+    }
+
+    .pf-lorax-buy-shop-atc-shipping {
+        font-size: 11px;
+    }
+
+    .pf-lorax-buy-shop-atc-price-main {
+        font-size: 16px;
+    }
+
+    .pf-lorax-buy-shop-atc-price-su {
+        font-size: 12px;
+    }
+
+    .pf-lorax-buy-shop-atc-price-savings-container {
+        font-size: 9px;
+        padding: 1px 5px;
+    }
+
+    .pf-lorax-buy-shop-atc-button {
+        padding: 14px 18px;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    .pf-lorax-buy-main {
+        gap: 30px;
+        padding: 20px 8px;
+    }
+
+    .pf-lorax-buy-images-thumbnails-item {
+        min-width: 60px;
+        height: 60px;
+    }
+
+    .pf-lorax-buy-shop-notice {
+        gap: 10px;
+        text-align: center;
+    }
+
+    .pf-lorax-buy-shop-notice-divider {
+        width: 30px;
+        height: 1px;
+    }
+
+    .pf-lorax-buy-shop-tb-text {
+        font-size: 15px;
+    }
+
+    .pf-lorax-buy-shop-item-ny {
+        padding: 15px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .pf-lorax-buy-shop-item-ny-number {
+        align-self: flex-start;
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+    }
+    
+    .pf-lorax-buy-shop-item-ny-text {
+        width: 100%;
+    }
+    
+    .pf-lorax-buy-shop-item-ny-title {
+        font-size: 15px;
+        margin-bottom: 8px;
+    }
+    
+    .pf-lorax-upsell-badge {
+        font-size: 9px;
+        padding: 3px 8px;
+    }
+    
+    .pf-lorax-upsell-pricing {
+        gap: 6px;
+    }
+    
+    .pf-lorax-upsell-price {
+        font-size: 20px;
+    }
+    
+    .pf-lorax-upsell-price-sub {
+        font-size: 12px;
+    }
+    
+    .pf-lorax-upsell-was {
+        font-size: 13px;
+    }
+    
+    .pf-lorax-upsell-savings {
+        gap: 8px;
+    }
+    
+    .pf-lorax-upsell-discount {
+        font-size: 12px;
+        padding: 3px 8px;
+    }
+    
+    .pf-lorax-upsell-save {
+        font-size: 13px;
+    }
+    
+    .pf-lorax-buy-shop-item-ny-add {
+        width: 100%;
+    }
+    
+    .pf-lorax-buy-shop-item-ny-add-button {
+        width: 100%;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .pf-lorax-buy-shop-item-conf {
+        padding: 10px;
+    }
+
+    .pf-lorax-buy-shop-atc-button {
+        padding: 16px 20px;
+        font-size: 16px;
+    }
+
+    .pf-lorax-buy-shop-gu {
+        gap: 15px;
+    }
+
+    .pf-lorax-footer.buy {
+        padding: 20px 8px;
+    }
+}
+
+@media (max-width: 320px) {
+    .pf-lorax-ann {
+        padding: 5px 6px;
+    }
+    
+    .pf-lorax-sale-timer-title,
+    .pf-lorax-sale-timer-subtitle {
+        font-size: 0.7rem;
+    }
+    
+    .pf-lorax-sale-timer-item {
+        min-width: 30px;
+        padding: 2px 3px;
+    }
+    
+    .pf-lorax-sale-timer-item-time {
+        font-size: 0.8rem;
+    }
+    
+    .pf-lorax-sale-timer-item-sub {
+        font-size: 0.48rem;
+    }
+    
+    .pf-lorax-buy-header-ann {
+        padding: 6px 8px;
+    }
+    
+    .pf-lorax-buy-header-se,
+    .pf-lorax-buy-header-offer {
+        font-size: 12px;
+    }
+    
+    .pf-lorax-progress-section {
+        padding: 10px 6px;
+    }
+    
+    .pf-lorax-back-btn {
+        width: 32px;
+        height: 32px;
+        left: 6px;
+    }
+    
+    .pf-lorax-back-btn img {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .pf-lorax-progress-steps {
+        gap: 16px;
+    }
+    
+    .pf-lorax-step-icon {
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
+    }
+    
+    .pf-lorax-step-title {
+        font-size: 9px;
+    }
+    
+    .pf-lorax-buy-main {
+        padding: 16px 6px;
+        gap: 24px;
+    }
+    
+    .pf-lorax-buy-shop-notice {
+        gap: 8px;
+        padding: 8px;
+    }
+    
+    .pf-lorax-buy-shop-notice-subtitle {
+        font-size: 10px;
+    }
+    
+    .pf-lorax-buy-shop-notice-title {
+        font-size: 13px;
+    }
+    
+    .pf-lorax-buy-shop-tb-text {
+        font-size: 14px;
+    }
+    
+    .pf-lorax-buy-shop-item-ny {
+        padding: 12px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .pf-lorax-buy-shop-item-ny-number {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    .pf-lorax-buy-shop-item-ny-title {
+        font-size: 14px;
+        gap: 6px;
+    }
+    
+    .pf-lorax-upsell-badge {
+        font-size: 8px;
+        padding: 2px 6px;
+    }
+    
+    .pf-lorax-upsell-price {
+        font-size: 18px;
+    }
+    
+    .pf-lorax-upsell-price-sub {
+        font-size: 11px;
+    }
+    
+    .pf-lorax-upsell-was {
+        font-size: 12px;
+    }
+    
+    .pf-lorax-upsell-discount {
+        font-size: 11px;
+        padding: 2px 6px;
+    }
+    
+    .pf-lorax-upsell-save {
+        font-size: 12px;
+    }
+    
+    .pf-lorax-buy-shop-item-ny-add-button {
+        padding: 9px 16px;
+        font-size: 13px;
+    }
+    
+    .pf-lorax-buy-shop-item-conf {
+        padding: 10px;
+        gap: 12px;
+    }
+    
+    .pf-lorax-buy-shop-item-conf-left {
+        flex-direction: column;
+        align-items: start;
+        gap: 10px;
+    }
+    
+    .pf-lorax-buy-shop-item-conf-check-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .pf-lorax-buy-shop-item-conf-product-image {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .pf-lorax-buy-shop-item-conf-options {
+        gap: 12px;
+        width: 100%;
+    }
+    
+    .pf-lorax-buy-shop-item-conf-options-item {
+        width: 100%;
+    }
+    
+    .pf-lorax-buy-shop-item-conf-options-item-title {
+        font-size: 12px;
+    }
+    
+    .pf-lorax-buy-shop-item-conf-options-item-color-select select,
+    .pf-lorax-buy-shop-item-conf-options-item-size-select select {
+        width: 100%;
+        font-size: 13px;
+        padding: 8px 28px 8px 8px;
+    }
+    
+    .pf-lorax-buy-shop-atc-button {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+    
+    .pf-lorax-buy-shop-atc-price-main {
+        font-size: 14px;
+    }
+    
+    .pf-lorax-buy-shop-atc-shipping {
+        font-size: 10px;
+    }
+    
+    .pf-lorax-buy-images-thumbnails-item {
+        min-width: 50px;
+        height: 50px;
+    }
+    
+    .pf-lorax-footer.buy {
+        padding: 16px 6px;
+    }
+    
+    .pf-lorax-footer-arr,
+    .pf-lorax-footer-links-item {
+        font-size: 12px;
+    }
+}
+
+/* Next SDK Loading States */
+html:not(.next-display-ready) [data-next-await] {
+    position: relative;
+    overflow: hidden;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+[data-next-await] * {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+[data-next-await]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e0e0e0;
+    animation: pulse-gray 1.5s ease-in-out infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes pulse-gray {
+    0%, 100% {
+        background-color: #e0e0e0;
+        opacity: 0.6;
+    }
+    50% {
+        background-color: #f5f5f5;
+        opacity: 0.8;
+    }
+}
+
+html.next-display-ready [data-next-await] * {
+    opacity: 1;
+}
+
+html.next-display-ready [data-next-await]::before {
+    display: none;
+}
+
+/* Size Guide Modal Styles */
+.pf-lorax-size-guide-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
+}
+
+.pf-lorax-size-guide-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.pf-lorax-size-guide-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.pf-lorax-size-guide-modal-container {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    max-width: 900px;
+    max-height: 90vh;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.pf-lorax-size-guide-modal.active .pf-lorax-size-guide-modal-container {
+    transform: translateY(0);
+}
+
+.pf-lorax-size-guide-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e5e5;
+    background: #fff;
+}
+
+.pf-lorax-size-guide-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.pf-lorax-size-guide-modal-close {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #666;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pf-lorax-size-guide-modal-close:hover {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.pf-lorax-size-guide-modal-close:focus {
+    outline: 2px solid #016a4c;
+    outline-offset: 2px;
+}
+
+.pf-lorax-size-guide-modal-content {
+    padding: 0;
+    max-height: calc(90vh - 80px);
+    overflow-y: auto;
+}
+
+.pf-lorax-size-guide-image-wrapper {
+    position: relative;
+    background: #f9f9f9;
+    padding: 20px;
+}
+
+.pf-lorax-size-guide-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pf-lorax-size-guide-notes {
+    padding: 20px 24px 24px;
+    background: white;
+}
+
+.pf-lorax-size-guide-notes p {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.pf-lorax-size-guide-notes ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.pf-lorax-size-guide-notes li {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.pf-lorax-size-guide-notes li:last-child {
+    margin-bottom: 0;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+    overflow: hidden !important;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+    .pf-lorax-size-guide-modal {
+        padding: 10px;
+    }
+    
+    .pf-lorax-size-guide-modal-container {
+        max-height: 95vh;
+        border-radius: 8px;
+    }
+    
+    .pf-lorax-size-guide-modal-header {
+        padding: 16px 20px;
+    }
+    
+    .pf-lorax-size-guide-modal-title {
+        font-size: 18px;
+    }
+    
+    .pf-lorax-size-guide-image-wrapper {
+        padding: 16px;
+    }
+    
+    .pf-lorax-size-guide-notes {
+        padding: 16px 20px 20px;
+    }
+    
+    .pf-lorax-size-guide-content {
+        max-height: calc(95vh - 68px);
+    }
+}
+
+/* Modal Styles */
+.pf-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.pf-modal-container {
+    background-color: white;
+    border-radius: 12px;
+    max-width: 800px;
+    max-height: 90vh;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.pf-modal-header {
+    padding: 30px 30px 20px;
+    border-bottom: 2px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pf-modal-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #016a4c;
+    margin: 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.pf-modal-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #666;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    transition: color 0.3s ease;
+    font-family: Arial, sans-serif;
+}
+
+.pf-modal-close:hover {
+    color: #016a4c;
+}
+
+.pf-modal-body {
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+    padding: 0;
+}
+
+.pf-modal-content {
+    padding: 30px;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.pf-modal-content p {
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 15px;
+}
+
+.pf-modal-content p:last-child {
+    margin-bottom: 0;
+}
+
+.pf-modal-content strong {
+    color: #016a4c;
+    font-weight: 600;
+}
+
+.pf-modal-content h3 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #016a4c;
+    margin: 30px 0 15px 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.pf-modal-content h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 20px 0 10px 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.pf-modal-link {
+    color: #016a4c;
+    text-decoration: underline;
+    transition: opacity 0.3s ease;
+}
+
+.pf-modal-link:hover {
+    opacity: 0.8;
+}
+
+.pf-modal-contact {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.pf-modal-contact div {
+    color: #333;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.pf-modal-contact div:last-child {
+    margin-bottom: 0;
+}
+
+/* Modal Responsive */
+@media (max-width: 768px) {
+    .pf-modal-overlay {
+        padding: 10px;
+    }
+    
+    .pf-modal-container {
+        max-height: 95vh;
+        border-radius: 8px;
+    }
+    
+    .pf-modal-header {
+        padding: 20px 20px 15px;
+    }
+    
+    .pf-modal-title {
+        font-size: 24px;
+    }
+    
+    .pf-modal-close {
+        font-size: 28px;
+    }
+    
+    .pf-modal-body {
+        max-height: calc(95vh - 100px);
+    }
+    
+    .pf-modal-content {
+        padding: 20px;
+    }
+    
+    .pf-modal-content p {
+        font-size: 14px;
+    }
+    
+    .pf-modal-content h3 {
+        font-size: 20px;
+        margin: 25px 0 12px 0;
+    }
+    
+    .pf-modal-content h4 {
+        font-size: 16px;
+        margin: 18px 0 8px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .pf-modal-overlay {
+        padding: 5px;
+    }
+    
+    .pf-modal-header {
+        padding: 16px 16px 12px;
+    }
+    
+    .pf-modal-title {
+        font-size: 20px;
+    }
+    
+    .pf-modal-close {
+        font-size: 24px;
+    }
+    
+    .pf-modal-content {
+        padding: 16px;
+    }
+    
+    .pf-modal-content p {
+        font-size: 13px;
+        margin-bottom: 16px;
+    }
+    
+    .pf-modal-content h3 {
+        font-size: 18px;
+        margin: 20px 0 10px 0;
+    }
+    
+    .pf-modal-content h4 {
+        font-size: 15px;
+        margin: 15px 0 6px 0;
+    }
+    
+    .pf-modal-contact {
+        padding: 12px;
+        margin-top: 12px;
+    }
+    
+    .pf-modal-contact div {
+        font-size: 14px;
+    }
+}
+
+/* Privacy Policy Specific Styling */
+.pf-privacy-table {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.pf-privacy-table h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #016a4c;
+    margin: 0 0 16px 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.pf-table-section {
+    width: 100%;
+}
+
+.pf-table-header {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin: 16px 0 8px 0;
+}
+
+.pf-table-header:first-child {
+    margin-top: 0;
+}
+
+.pf-modal-content ul {
+    margin: 12px 0;
+    padding-left: 20px;
+}
+
+.pf-modal-content li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.pf-modal-content li:last-child {
+    margin-bottom: 0;
+}
+
+.pf-lorax-footer-divider {
+    color: #666;
+    margin: 0 8px;
+}

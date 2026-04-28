@@ -1,0 +1,6 @@
+# Ignore campaign cart starter folder
+.cursor/campaign-cart-starter-main/
+.cursor/temp/
+
+.DS_Store
+.vercel

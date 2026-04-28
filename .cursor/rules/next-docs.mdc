@@ -1,0 +1,81 @@
+---
+alwaysApply: true
+description: Next Commerce Campaigns API and SDK documentation and best practices
+---
+
+# Next Commerce Campaigns API & SDK Documentation
+
+The funnels we're building in this project rely on the Next Commerce Campaigns API and SDK.
+
+Before writing any code, you need to make sure it follows their standard best practices and docs.
+
+Here are all the markdown documentation files to consult and follow:
+
+## Getting Started
+- [Installation](mdc:.cursor/rules/getting-started/installation.md)
+- [Configuration](mdc:.cursor/rules/getting-started/configuration.md)
+- [Quick Start](mdc:.cursor/rules/getting-started/quick-start.md)
+- [URL Parameters](mdc:.cursor/rules/getting-started/url-parameters.md)
+- [Troubleshooting](mdc:.cursor/rules/getting-started/troubleshooting.md)
+
+## Attributes Documentation
+- [Attributes Overview](mdc:.cursor/rules/attributes/overview.md)
+- [Campaign Attributes](mdc:.cursor/rules/attributes/campaign.md)
+- [Cart Attributes](mdc:.cursor/rules/attributes/cart.md)
+- [Conditional Display Attributes](mdc:.cursor/rules/attributes/conditionals.md)
+- [Formatting Attributes](mdc:.cursor/rules/attributes/formatting.md)
+- [Order Attributes](mdc:.cursor/rules/attributes/order.md)
+- [Package Attributes](mdc:.cursor/rules/attributes/package.md)
+- [Profile Attributes](mdc:.cursor/rules/attributes/profile.md)
+- [Selection Attributes](mdc:.cursor/rules/attributes/selection.md)
+- [URL Parameters](mdc:.cursor/rules/attributes/url-parameters.md)
+
+## Cart System
+- [Cart System Overview](mdc:.cursor/rules/cart-system/overview.md)
+- [Cart Buttons](mdc:.cursor/rules/cart-system/buttons.md)
+- [Cart Quantity Controls](mdc:.cursor/rules/cart-system/quantity-controls.md)
+- [Cart Selectors](mdc:.cursor/rules/cart-system/selectors.md)
+- [Cart State Management](mdc:.cursor/rules/cart-system/state-management.md)
+
+## Upsells
+- [Upsells Overview](mdc:.cursor/rules/upsells/overview.md)
+- [Upsell Configuration](mdc:.cursor/rules/upsells/configuration.md)
+- [Direct Upsells](mdc:.cursor/rules/upsells/direct-upsells.md)
+- [Quantity Upsells](mdc:.cursor/rules/upsells/quantity-upsells.md)
+- [Selection Upsells](mdc:.cursor/rules/upsells/selection-upsells.md)
+
+## API Reference
+- [Attribution](mdc:.cursor/rules/api-reference/attribution.md)
+- [Callbacks](mdc:.cursor/rules/api-reference/callbacks.md)
+- [CSS Classes](mdc:.cursor/rules/api-reference/css-classes.md)
+- [Data Attributes](mdc:.cursor/rules/api-reference/data-attributes.md)
+- [Events](mdc:.cursor/rules/api-reference/events.md)
+- [Method Summary](mdc:.cursor/rules/api-reference/method-summary.md)
+- [Methods](mdc:.cursor/rules/api-reference/methods.md)
+- [Profiles](mdc:.cursor/rules/api-reference/profiles.md)
+- [URL Parameters](mdc:.cursor/rules/api-reference/url-parameters.md)
+
+## Examples
+- [Basic Product Page](mdc:.cursor/rules/examples/basic-product-page.md)
+- [Advanced Customization](mdc:.cursor/rules/examples/advanced-customization.md)
+- [Checkout Page](mdc:.cursor/rules/examples/checkout-page.md)
+- [Tier Selector Implementation](mdc:.cursor/rules/examples/tier-selector-implementation.md)
+- [Upsell Flow](mdc:.cursor/rules/examples/upsell-flow.md)
+
+## Guides
+- [Best Practices](mdc:.cursor/rules/guides/best-practices.md)
+- [Accessibility](mdc:.cursor/rules/guides/accessibility.md)
+- [Performance](mdc:.cursor/rules/guides/performance.md)
+- [Migration](mdc:.cursor/rules/guides/migration.md)
+- [Profiles](mdc:.cursor/rules/guides/profiles.md)
+
+## Utilities
+- [Analytics](mdc:.cursor/rules/utilities/analytics.md)
+- [Debugger](mdc:.cursor/rules/utilities/debugger.md)
+- [Exit Intent](mdc:.cursor/rules/utilities/exit-intent.md)
+- [FOMO](mdc:.cursor/rules/utilities/fomo.md)
+- [Loading States](mdc:.cursor/rules/utilities/loading-states.md)
+
+## Multi-Currency
+- [Overview](mdc:.cursor/rules/multi-currency/overview.md)
+- [Flow Chart](mdc:.cursor/rules/multi-currency/flow-chart.md)

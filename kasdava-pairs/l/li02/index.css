@@ -1,0 +1,475 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    color: #212529;
+    background-color: #f8f9fa;
+}
+
+.page-wrapper {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Header */
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.25rem 0.75rem;
+}
+
+header img {
+    width: 171px;
+    height: auto;
+}
+
+/* Hero Section */
+.hero-section {
+    padding: 2rem 1.25rem 3rem;
+    text-align: center;
+    max-width: 1020px;
+    margin: 0 auto;
+}
+
+.hero-section h1 {
+    font-size: 2.625rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #000;
+    margin: 0 auto 1.25rem;
+    max-width: 980px;
+}
+
+.byline {
+    font-size: 1rem;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 2.5rem;
+}
+
+/* Product Hero Box */
+.product-hero {
+    background: linear-gradient(135deg, #c8e6c9 0%, #d4edda 50%, #e8f5e9 100%);
+    padding: 8rem 3rem 3rem;
+    margin: 15rem auto 0;
+    text-align: center;
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: visible;
+}
+
+.product-hero .hero-image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    margin: -20rem auto 2rem;
+    display: block;
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.12));
+    position: relative;
+    z-index: 10;
+}
+
+.hero-description {
+    font-size: 1.3125rem;
+    line-height: 1.8;
+    color: #1a1a1a;
+    max-width: 920px;
+    margin: 0 auto;
+    font-weight: 400;
+}
+
+/* Main Content */
+main {
+    background-color: #fff;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    border-radius: 0.5rem;
+    position: relative;
+}
+
+main > h2 {
+    font-size: 2.375rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #000;
+}
+
+main > p {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+/* Card List */
+.card-list {
+    margin-top: 2.5rem;
+}
+
+/* Individual Cards */
+.gf-card {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    margin: 3rem 0;
+}
+
+.gf-card:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.gf-card img {
+    width: 45%;
+    flex-shrink: 0;
+    height: auto;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.gf-card > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.gf-card h2 {
+    font-size: 2.375rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #000;
+    line-height: 1.15;
+}
+
+.gf-card p {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    margin-bottom: 0.75rem;
+    color: #212529;
+}
+
+/* Conclusion/CTA Section */
+.conclusion {
+    background-color: #d2ecc2;
+    padding: 3.5rem 3rem;
+    text-align: left;
+    max-width: 890px;
+    margin: 3rem auto 0;
+    border-radius: 0.5rem;
+}
+
+.conclusion h3 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 1.75rem;
+    color: #000;
+    line-height: 1.25;
+    text-align: center;
+}
+
+.conclusion .warning-text {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #000;
+    text-align: center;
+}
+
+.conclusion p {
+    font-size: 1.125rem;
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+    color: #000;
+    font-weight: 600;
+}
+
+.conclusion .step {
+    font-weight: 700;
+    font-size: 1.75rem;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.conclusion .go-to-landing {
+    display: block;
+    background-color: #ffd431;
+    color: #000;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-decoration: underline;
+    padding: 0.875rem 3rem;
+    border-radius: 8px;
+    border: 0.8px solid #eeb519;
+    margin: 2rem auto 0;
+    width: fit-content;
+    text-align: center;
+    transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(122, 148, 106, 0.39);
+}
+
+.conclusion .go-to-landing:hover {
+    background-color: #ffca1f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(122, 148, 106, 0.5);
+}
+
+/* Footer */
+footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    text-align: center;
+    padding: 2rem 1.25rem 0.75rem;
+    background-color: #f8f9fa;
+}
+
+footer small {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #7a7a7a;
+}
+
+footer a {
+    color: #7a7a7a;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Sticky CTA Button */
+.sticky-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 1rem;
+    background-color: #fff;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    display: none; /* Hide on desktop */
+}
+
+.sticky-cta.visible {
+    transform: translateY(0);
+}
+
+.sticky-cta-button {
+    display: block;
+    width: 100%;
+    background-color: #ffd431;
+    color: #000;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: underline;
+    padding: 0.875rem 1.5rem;
+    border-radius: 8px;
+    border: 0.8px solid #eeb519;
+    text-align: center;
+    transition: all 0.3s;
+    box-shadow: 0 4px 8px rgba(122, 148, 106, 0.39);
+}
+
+.sticky-cta-button:hover {
+    background-color: #ffca1f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(122, 148, 106, 0.5);
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+    /* Enable sticky CTA on mobile */
+    .sticky-cta {
+        display: block;
+        font-size: 0.6rem;
+    }
+
+    header {
+        padding: 2rem 1rem 0.5rem;
+    }
+
+    header img {
+        width: 150px;
+    }
+
+    .hero-section {
+        padding: 1.5rem 1rem 2.5rem;
+    }
+
+    .hero-section h1 {
+        font-size: 1.875rem;
+    }
+
+    .byline {
+        font-size: 0.9375rem;
+        margin-bottom: 2rem;
+    }
+
+    .product-hero {
+        padding: 4rem 1.5rem 2rem;
+        margin: 8rem auto 0;
+        border-radius: 10px;
+    }
+
+    .product-hero .hero-image {
+        max-width: 350px;
+        margin: -12rem auto 1.5rem;
+    }
+
+    .hero-description {
+        font-size: 1.0625rem;
+        line-height: 1.7;
+    }
+
+    main {
+        padding: 2rem 0rem;
+        margin: 0 1rem;
+    }
+
+    main > h2 {
+        font-size: 1.75rem;
+    }
+
+    main > p {
+        font-size: 1.0625rem;
+    }
+
+    .card-list {
+        margin-top: 2rem;
+    }
+
+    .gf-card {
+        flex-direction: column !important;
+        gap: 1.25rem;
+        margin: 2rem 0;
+    }
+
+    .gf-card img {
+        width: 100%;
+    }
+
+    .gf-card h2 {
+        font-size: 1.625rem;
+    }
+
+    .gf-card p {
+        font-size: 1.0625rem;
+    }
+
+    .conclusion {
+        padding: 2.5rem 1.5rem;
+        margin: 2rem 1rem 0;
+    }
+
+    .conclusion h3 {
+        font-size: 2rem;
+    }
+
+    .conclusion .warning-text {
+        font-size: 1.25rem;
+    }
+
+    .conclusion p {
+        font-size: 1.0625rem;
+    }
+
+    .conclusion .step {
+        font-size: 1.5rem;
+    }
+
+    .conclusion .go-to-landing {
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-size: 1rem;
+        padding: 1rem 2rem;
+        margin: 1.5rem auto 0;
+    }
+
+    footer {
+        padding: 1.5rem 1rem 0.5rem;
+    }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+    header {
+        padding: 2.5rem 1.5rem 0.75rem;
+    }
+
+    .hero-section {
+        padding: 1.75rem 1.5rem 2.75rem;
+    }
+
+    .hero-section h1 {
+        font-size: 2.125rem;
+    }
+
+    .byline {
+        margin-bottom: 2.25rem;
+    }
+
+    .product-hero {
+        padding: 5rem 2rem 2.5rem;
+        margin: 11rem auto 0;
+        border-radius: 11px;
+    }
+
+    .product-hero .hero-image {
+        max-width: 450px;
+        margin: -16rem auto 1.75rem;
+    }
+
+    .hero-description {
+        font-size: 1.1875rem;
+        line-height: 1.75;
+    }
+
+    main {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .gf-card {
+        gap: 1.5rem;
+        margin: 2.5rem 0;
+    }
+
+    .conclusion {
+        padding: 3rem 2rem;
+        margin: 2.5rem 1.5rem 0;
+    }
+
+    .conclusion h3 {
+        font-size: 2.125rem;
+    }
+
+    .conclusion .warning-text {
+        font-size: 1.1875rem;
+    }
+
+    .conclusion p {
+        font-size: 1.0625rem;
+    }
+
+    .conclusion .step {
+        font-size: 1.375rem;
+    }
+}
