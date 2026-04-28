@@ -4,7 +4,7 @@ window.nextReady = window.nextReady || [];
 // Auto-generated from src/config.ts
 // For production, use your own configuration
 window.nextConfig = {
-    apiKey: "ho11SJdgfvSi19PSGsER9xIjRbcmqe6G5uL0Hmlo",
+    apiKey: "6AFua4vXCfoDW8QzhquvrDSmdkGcpWyW3E84bVeZ",
     debug: true, // Always true since this file only loads in debug mode
     paymentConfig: {
         expressCheckout: {

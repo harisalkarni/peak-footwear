@@ -3,7 +3,7 @@ window.nextReady = window.nextReady || [];
 
 // Campaign B (BOGO) Configuration
 window.nextConfig = {
-    apiKey: "CfU8Bh2BH4AjnhnHr9Aws5utZaIxFQDvMLsoRMUn",
+    apiKey: "6AFua4vXCfoDW8QzhquvrDSmdkGcpWyW3E84bVeZ",
     debug: true,
     paymentConfig: {
         expressCheckout: {
