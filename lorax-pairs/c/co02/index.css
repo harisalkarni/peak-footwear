@@ -1503,3 +1503,379 @@ button:focus-visible,
 .input-flds:focus {
   border-color: var(--brand-primary) !important;
 }
+
+/* ============================================================
+   STEP TWO — cs2-* Component Styles
+   Color + Size selector section revealed after Step 1
+   ============================================================ */
+
+/* --- Header bar "2. Select Your Color and Size" --- */
+.cs2-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background-color: var(--brand-primary) !important;
+  color: #fff !important;
+  padding: 14px 20px !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.cs2-header-num {
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+}
+
+.cs2-header-title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+/* --- Slots container --- */
+.cs2-slots {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  border-top: none !important;
+  border-radius: 0 0 0 0 !important;
+  background: #fff !important;
+  padding: 0 !important;
+}
+
+/* --- Individual slot row --- */
+.cs2-slot {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  padding: 14px 16px !important;
+  border-bottom: 1px solid #e8e8e8 !important;
+}
+
+.cs2-slot:last-child {
+  border-bottom: none !important;
+}
+
+/* Slot number label "1." "2." "3." */
+.cs2-slot-number {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: #333 !important;
+  line-height: 1 !important;
+  padding-top: 34px !important;
+  flex-shrink: 0 !important;
+  width: 20px !important;
+}
+
+/* Two fields (color + size) side by side */
+.cs2-slot-fields {
+  display: flex !important;
+  gap: 10px !important;
+  flex: 1 !important;
+  align-items: flex-end !important;
+  flex-wrap: wrap !important;
+}
+
+/* Each labeled field */
+.cs2-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  flex: 1 !important;
+  min-width: 120px !important;
+}
+
+.cs2-field-label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #555 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  line-height: 1.2 !important;
+}
+
+/* --- Color dropdown wrapper (thumb + select + caret) --- */
+.cs2-color-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+  border: 1.5px solid #d0d0d0 !important;
+  border-radius: 6px !important;
+  background: #fafafa !important;
+  overflow: hidden !important;
+  height: 44px !important;
+}
+
+.cs2-color-thumb {
+  width: 38px !important;
+  height: 38px !important;
+  object-fit: cover !important;
+  flex-shrink: 0 !important;
+  border-right: 1.5px solid #e0e0e0 !important;
+  background: #fff !important;
+  margin: 2px 0 2px 2px !important;
+  border-radius: 4px !important;
+}
+
+/* --- Size dropdown wrapper --- */
+.cs2-size-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  position: relative !important;
+  border: 1.5px solid #d0d0d0 !important;
+  border-radius: 6px !important;
+  background: #fafafa !important;
+  height: 44px !important;
+}
+
+/* --- Shared select styles --- */
+.cs2-select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  border: none !important;
+  background: transparent !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #222 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  height: 100% !important;
+  padding-right: 28px !important;
+}
+
+.cs2-select--color {
+  flex: 1 !important;
+  padding-left: 10px !important;
+  width: 100% !important;
+}
+
+.cs2-select--size {
+  flex: 1 !important;
+  padding-left: 12px !important;
+  width: 100% !important;
+}
+
+/* Caret arrow over selects */
+.cs2-caret {
+  position: absolute !important;
+  right: 9px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none !important;
+  flex-shrink: 0 !important;
+  width: 12px !important;
+  height: 8px !important;
+}
+
+/* --- Sizing info bar --- */
+.cs2-sizing-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: #fff;
+  border-top: none !important;
+  padding: 9px 16px !important;
+  font-size: 12px !important;
+  color: #555 !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+
+.cs2-sizing-text {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  font-size: 12px !important;
+  color: #555 !important;
+}
+
+.cs2-size-chart-link {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--brand-primary) !important;
+  text-decoration: underline !important;
+  white-space: nowrap !important;
+}
+
+.cs2-size-chart-link:hover {
+  color: var(--brand-primary-dark) !important;
+}
+
+/* --- Expert tips box --- */
+.cs2-tips-box {
+  background: #fff ;
+  border-top: none !important;
+  padding: 14px 16px !important;
+  font-size: 13px !important;
+  color: #333 !important;
+}
+
+.cs2-tips-main-row {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  margin-bottom: 12px !important;
+}
+
+.cs2-tips-icon {
+  flex-shrink: 0 !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cs2-tips-main-text {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #222 !important;
+  line-height: 1.5 !important;
+}
+
+.cs2-tips-main-text strong {
+  color: var(--brand-primary) !important;
+  font-weight: 700 !important;
+}
+
+.cs2-tips-intro {
+  font-size: 12px !important;
+  color: #555 !important;
+  margin: 0 0 6px !important;
+  line-height: 1.4 !important;
+}
+
+.cs2-tips-item {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #222 !important;
+  margin: 4px 0 !important;
+  line-height: 1.4 !important;
+}
+
+/* --- TARIFF FREE badge --- */
+.cs2-tariff-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  background: #fff3cd !important;
+  border: 1.5px solid #ffc107 !important;
+  border-radius: 20px !important;
+  padding: 4px 12px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #856404 !important;
+  letter-spacing: 0.5px !important;
+  white-space: nowrap !important;
+}
+
+.cs2-tariff-flag {
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+
+.cs2-tariff-text {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1px !important;
+}
+
+/* --- checkout-footer alignment for step two --- */
+.checkout-footer {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-top: 10px !important;
+  margin-bottom: 30px;
+}
+
+/* --- Payment card flags in step two --- */
+.card-flags-2.cc-2step {
+  max-width: 260px !important;
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* ============================================================
+   RESPONSIVE — cs2-* mobile adjustments
+   ============================================================ */
+
+@media (max-width: 600px) {
+  .cs2-header {
+    padding: 12px 14px !important;
+    border-radius: 6px 6px 0 0 !important;
+  }
+
+  .cs2-header-num {
+    font-size: 19px !important;
+  }
+
+  .cs2-header-title {
+    font-size: 16px !important;
+  }
+
+  .cs2-slot {
+    padding: 12px 10px !important;
+    gap: 8px !important;
+  }
+
+  .cs2-slot-number {
+    font-size: 15px !important;
+    padding-top: 30px !important;
+    width: 16px !important;
+  }
+
+  .cs2-slot-fields {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .cs2-field {
+    min-width: unset !important;
+    width: 100% !important;
+  }
+
+  .cs2-color-wrapper,
+  .cs2-size-wrapper {
+    height: 42px !important;
+  }
+
+  .cs2-color-thumb {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .cs2-select {
+    font-size: 12px !important;
+  }
+
+  .cs2-sizing-bar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+
+  .cs2-tips-main-row {
+    gap: 10px !important;
+  }
+
+  .cs2-tariff-badge {
+    padding: 4px 10px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .cs2-header-title {
+    font-size: 14px !important;
+  }
+
+  .cs2-select--color,
+  .cs2-select--size {
+    font-size: 11px !important;
+  }
+}

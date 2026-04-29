@@ -12647,6 +12647,7 @@ figcaption {
   grid-row-gap: 0.5rem;
   flex-flow: column;
   display: flex;
+  padding: 0 15px;
 }
 
 .os-button__spinner {

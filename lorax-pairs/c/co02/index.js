@@ -1,100 +1,113 @@
 // Olympus MV Selection - Lorax Pro Configuration
 // Peak Footwear - Multi-Variant Checkout
 
-// Package ID Calculator for Lorax Pro Products
-// Based on actual JSON package structure from campaign-packages-lorax-pro---1_2_3-pairs---_lorax.json
+// Direct lookup table sourced from peakfootwear.29next.store (product ID 3424)
+// Maps color slug + size string → 29next variant ID
+const LORAX_VARIANT_IDS = {
+    'white-pink': {
+        'US Women 6 - US Men 4':              3432,
+        'US Women 7 - US Men 5':              3434,
+        'US Women 7.5 - US Men 5.5':          3435,
+        'US Women 8/8.5 - US Men 6/6.5':      3437,
+        'US Women 9/9.5 - US Men 7/7.5':      3439,
+        'US Women 10/10.5 - US Men 8/8.5':    3440,
+        'US Women 11/11.5 - US Men 9/9.5':    3442,
+        'US Women 12/12.5 - US Men 10/10.5':  3444,
+        'US Women 13/13.5 - US Men 11/11.5':  3445,
+    },
+    'white-black': {
+        'US Women 6 - US Men 4':              3447,
+        'US Women 7 - US Men 5':              3449,
+        'US Women 7.5 - US Men 5.5':          3451,
+        'US Women 8/8.5 - US Men 6/6.5':      3452,
+        'US Women 9/9.5 - US Men 7/7.5':      3454,
+        'US Women 10/10.5 - US Men 8/8.5':    3456,
+        'US Women 11/11.5 - US Men 9/9.5':    3458,
+        'US Women 12/12.5 - US Men 10/10.5':  3460,
+        'US Women 13/13.5 - US Men 11/11.5':  3461,
+    },
+    'white-gray': {
+        'US Women 6 - US Men 4':              3463,
+        'US Women 7 - US Men 5':              3465,
+        'US Women 7.5 - US Men 5.5':          3467,
+        'US Women 8/8.5 - US Men 6/6.5':      3469,
+        'US Women 9/9.5 - US Men 7/7.5':      3471,
+        'US Women 10/10.5 - US Men 8/8.5':    3472,
+        'US Women 11/11.5 - US Men 9/9.5':    3474,
+        'US Women 12/12.5 - US Men 10/10.5':  3475,
+        'US Women 13/13.5 - US Men 11/11.5':  3477,
+    },
+    'black': {
+        'US Women 6 - US Men 4':              3479,
+        'US Women 7 - US Men 5':              3481,
+        'US Women 7.5 - US Men 5.5':          3483,
+        'US Women 8/8.5 - US Men 6/6.5':      3485,
+        'US Women 9/9.5 - US Men 7/7.5':      3487,
+        'US Women 10/10.5 - US Men 8/8.5':    3489,
+        'US Women 11/11.5 - US Men 9/9.5':    3491,
+        'US Women 12/12.5 - US Men 10/10.5':  3493,
+        'US Women 13/13.5 - US Men 11/11.5':  3495,
+        'US Women 14 - US Men 12':            3496,
+        'US Women 15 - US Men 13':            3499,
+        'US Women 16 - US Men 14':            3501,
+    },
+    'white-blue': {
+        'US Women 6 - US Men 4':              3503,
+        'US Women 7 - US Men 5':              3504,
+        'US Women 7.5 - US Men 5.5':          3506,
+        'US Women 8/8.5 - US Men 6/6.5':      3509,
+        'US Women 9/9.5 - US Men 7/7.5':      3511,
+        'US Women 10/10.5 - US Men 8/8.5':    3513,
+        'US Women 11/11.5 - US Men 9/9.5':    3515,
+        'US Women 12/12.5 - US Men 10/10.5':  3517,
+        'US Women 13/13.5 - US Men 11/11.5':  3518,
+        'US Women 14 - US Men 12':            3520,
+        'US Women 15 - US Men 13':            3522,
+        'US Women 16 - US Men 14':            3524,
+    },
+    'blue': {
+        'US Women 9/9.5 - US Men 7/7.5':      3525,
+        'US Women 10/10.5 - US Men 8/8.5':    3529,
+        'US Women 11/11.5 - US Men 9/9.5':    3535,
+        'US Women 12/12.5 - US Men 10/10.5':  3539,
+        'US Women 13/13.5 - US Men 11/11.5':  3543,
+        'US Women 14 - US Men 12':            3547,
+        'US Women 15 - US Men 13':            3551,
+        'US Women 16 - US Men 14':            3554,
+    },
+    'orange': {
+        'US Women 9/9.5 - US Men 7/7.5':      3557,
+        'US Women 10/10.5 - US Men 8/8.5':    3559,
+        'US Women 11/11.5 - US Men 9/9.5':    3561,
+        'US Women 12/12.5 - US Men 10/10.5':  3564,
+        'US Women 13/13.5 - US Men 11/11.5':  3567,
+        'US Women 14 - US Men 12':            3571,
+        'US Women 15 - US Men 13':            3573,
+        'US Women 16 - US Men 14':            3576,
+    },
+    'pink': {
+        'US Women 6 - US Men 4':              3578,
+        'US Women 7 - US Men 5':              3581,
+        'US Women 7.5 - US Men 5.5':          3583,
+        'US Women 8/8.5 - US Men 6/6.5':      3586,
+        'US Women 9/9.5 - US Men 7/7.5':      3588,
+        'US Women 10/10.5 - US Men 8/8.5':    3591,
+        'US Women 11/11.5 - US Men 9/9.5':    3594,
+    },
+};
+
 function calculatePackageId(color, size, quantity) {
-    // Color configuration with actual starting ref_ids and size counts
-    // Each color has a specific starting ID and number of sizes based on JSON
-    const colorConfig = {
-        'white-pink':  { start: 1,  sizes: 10, hasSize6: true,  hasExtended: false }, // 1-10: 6-14
-        'black':       { start: 11, sizes: 12, hasSize6: true,  hasExtended: true },  // 11-22: 6-16
-        'pink':        { start: 23, sizes: 10, hasSize6: true,  hasExtended: false }, // 23-32: 6-14
-        'white-black': { start: 33, sizes: 12, hasSize6: true,  hasExtended: true },  // 33-44: 6-16
-        'white-gray':  { start: 45, sizes: 12, hasSize6: true,  hasExtended: true },  // 45-56: 6-16
-        'blue':        { start: 57, sizes: 12, hasSize6: true,  hasExtended: true },  // 57-68: 6-16
-        'orange':      { start: 69, sizes: 11, hasSize6: false, hasExtended: true },  // 69-79: 7-16 (NO size 6!)
-        'white-blue':  { start: 80, sizes: 12, hasSize6: true,  hasExtended: true }   // 80-91: 6-16
-    };
-    
-    // Size order - ALL sizes including size 6 (index 0)
-    const allSizes = [
-        'US Women 6 - US Men 4',      // Index 0 - NOT available for Orange
-        'US Women 7 - US Men 5',      // Index 1
-        'US Women 7.5 - US Men 5.5',  // Index 2
-        'US Women 8/8.5 - US Men 6/6.5',   // Index 3
-        'US Women 9/9.5 - US Men 7/7.5',   // Index 4
-        'US Women 10/10.5 - US Men 8/8.5', // Index 5
-        'US Women 11/11.5 - US Men 9/9.5', // Index 6
-        'US Women 12/12.5 - US Men 10/10.5', // Index 7
-        'US Women 13/13.5 - US Men 11/11.5', // Index 8
-        'US Women 14 - US Men 12',     // Index 9
-        'US Women 15 - US Men 13',     // Index 10 - Extended
-        'US Women 16 - US Men 14'      // Index 11 - Extended
-    ];
-    
-    const config = colorConfig[color];
-    if (!config) {
-        console.error('Color not found:', color);
+    const colorMap = LORAX_VARIANT_IDS[color];
+    if (!colorMap) {
+        console.error('Color not found in variant table:', color);
         return null;
     }
-    
-    const sizeIndex = allSizes.indexOf(size);
-    if (sizeIndex === -1) {
-        console.error('Size not found:', size);
+    const packageId = colorMap[size];
+    if (!packageId) {
+        console.error('Size not available for this color:', { color, size });
         return null;
     }
-    
-    console.log('Package ID calculation debug:', {
-        color: color,
-        size: size,
-        quantity: quantity,
-        sizeIndex: sizeIndex,
-        colorConfig: config
-    });
-    
-    // Validate size is available for this color
-    // Size 6 (index 0) is NOT available for Orange
-    if (sizeIndex === 0 && !config.hasSize6) {
-        console.error('Size 6 not available for color:', color);
-        return null;
-    }
-    
-    // Extended sizes (15-16, indices 10-11) only for colors with hasExtended: true
-    if (sizeIndex >= 10 && !config.hasExtended) {
-        console.error('Extended sizes not available for color:', color);
-        return null;
-    }
-    
-    // Calculate size offset within color group
-    let sizeOffset;
-    if (config.hasSize6) {
-        // Colors with size 6: direct mapping
-        sizeOffset = sizeIndex;
-    } else {
-        // Orange: doesn't have size 6, so offset is sizeIndex - 1
-        sizeOffset = sizeIndex - 1;
-    }
-    
-    // Limit size offset to actual available sizes
-    if (sizeOffset >= config.sizes) {
-        console.error('Size offset exceeds available sizes:', { sizeOffset, availableSizes: config.sizes });
-        return null;
-    }
-    
-    // Calculate quantity tier offset (91 packages per tier)
-    const quantityOffset = (quantity - 1) * 91;
-    
-    // Final package ID
-    const packageId = quantityOffset + config.start + sizeOffset;
-    
-    console.log('Package ID calculation result:', {
-        quantityOffset: quantityOffset,
-        colorStart: config.start,
-        sizeOffset: sizeOffset,
-        finalPackageId: packageId
-    });
-    
+    console.log('Package ID lookup:', { color, size, packageId });
     return packageId;
 }
 
@@ -468,12 +481,15 @@ class TierController {
 
     const template = container.querySelector('[next-tier-slot="1"]');
     
-    // Hide slots beyond tier
+    // Hide slots beyond tier — use setProperty('important') to beat !important CSS rules
     container.querySelectorAll('[next-tier-slot]').forEach(slot => {
       const num = +slot.getAttribute('next-tier-slot');
-      slot.style.display = num > tier ? 'none' : 'block';
-      // All slots are always active in bb01 style
-      slot.classList.add('active');
+      if (num > tier) {
+        slot.style.setProperty('display', 'none', 'important');
+      } else {
+        slot.style.removeProperty('display'); // Let CSS (display: flex) take over
+        slot.classList.add('active');
+      }
     });
 
     // Create missing slots
@@ -482,8 +498,13 @@ class TierController {
         const slot = template.cloneNode(true);
         slot.setAttribute('next-tier-slot', i);
         slot.setAttribute('data-item', i);
+
+        // Fix slot number label (cloned from slot 1 which always says "1.")
+        const numEl = slot.querySelector('.cs2-slot-number');
+        if (numEl) numEl.textContent = i + '.';
+
         container.appendChild(slot);
-        
+
         // Setup listeners for the new selects
         this._setupVariantListeners();
       }
@@ -512,16 +533,17 @@ class TierController {
     
     // READ the default selected values from HTML and store them
     if (colorSelect) {
-      const selectedColor = colorSelect.value || colorSelect.querySelector('option[selected]')?.value;
-      if (selectedColor && !v.color) {
+      // Priority: stored value → CONFIG default → HTML [selected] attr → first option
+      const selectedColor = v.color
+        || CONFIG.defaults.color
+        || colorSelect.querySelector('option[selected]')?.value
+        || colorSelect.options[0]?.value;
+      if (selectedColor) {
         v.color = selectedColor;
+        colorSelect.value = selectedColor;
         console.log(`Slot ${slotNum} default color set to:`, selectedColor);
-      }
-      if (v.color) {
-        colorSelect.value = v.color;
-        this._updateImage(slot, v.color);
-        // Update size options based on color (handles Orange not having size 6, extended sizes, etc.)
-        this._updateSizeOptionsForColor(slot, v.color);
+        this._updateImage(slot, selectedColor);
+        this._updateSizeOptionsForColor(slot, selectedColor);
       }
     }
     
@@ -607,54 +629,25 @@ class TierController {
     const sizeSelect = slot.querySelector('select[next-variant-option="size"]');
     if (!sizeSelect) return;
 
-    // Colors that DON'T have size 6 (US Women 6 - US Men 4)
-    const noSize6Colors = ['orange'];
-    
-    // Colors that have extended sizes (US15-16)
-    const extendedSizeColors = ['black', 'white-black', 'white-gray', 'blue', 'orange', 'white-blue'];
+    // Available sizes come directly from the lookup table — single source of truth
+    const availableSizes = LORAX_VARIANT_IDS[color] ? Object.keys(LORAX_VARIANT_IDS[color]) : [];
+    const slotNum = +slot.getAttribute('next-tier-slot');
 
-    // Handle size 6
-    const size6Option = sizeSelect.querySelector('option[value="US Women 6 - US Men 4"]');
-    if (size6Option) {
-      if (noSize6Colors.includes(color)) {
-        size6Option.style.display = 'none';
-        size6Option.disabled = true;
-        // If currently selected, reset to a valid option
-        if (sizeSelect.value === 'US Women 6 - US Men 4') {
-          sizeSelect.value = 'US Women 8/8.5 - US Men 6/6.5';
-          // Update stored value
-          const slotNum = +slot.getAttribute('next-tier-slot');
-          if (this.selectedVariants.has(slotNum)) {
-            this.selectedVariants.get(slotNum).size = 'US Women 8/8.5 - US Men 6/6.5';
-          }
-        }
-      } else {
-        size6Option.style.display = '';
-        size6Option.disabled = false;
+    Array.from(sizeSelect.options).forEach(option => {
+      const available = availableSizes.includes(option.value);
+      option.disabled = !available;
+      option.style.display = available ? '' : 'none';
+    });
+
+    // If the currently selected size is no longer available, pick the first valid one
+    if (!availableSizes.includes(sizeSelect.value)) {
+      sizeSelect.value = availableSizes[0] || '';
+      if (this.selectedVariants.has(slotNum)) {
+        this.selectedVariants.get(slotNum).size = sizeSelect.value;
       }
     }
 
-    // Handle extended sizes (US15-16)
-    const extendedSizeOptions = sizeSelect.querySelectorAll('.extended-size');
-    extendedSizeOptions.forEach(option => {
-      if (extendedSizeColors.includes(color)) {
-        option.style.display = '';
-        option.disabled = false;
-      } else {
-        option.style.display = 'none';
-        option.disabled = true;
-        // If currently selected, reset to a valid option
-        if (option.selected) {
-          sizeSelect.value = 'US Women 8/8.5 - US Men 6/6.5';
-          const slotNum = +slot.getAttribute('next-tier-slot');
-          if (this.selectedVariants.has(slotNum)) {
-            this.selectedVariants.get(slotNum).size = 'US Women 8/8.5 - US Men 6/6.5';
-          }
-        }
-      }
-    });
-
-    console.log('Size options updated for color:', color);
+    console.log('Size options updated for color:', color, '| available:', availableSizes.length);
   }
 
   // Swatch removed - using standard selects
@@ -663,13 +656,21 @@ class TierController {
     const img = slot.querySelector('[next-tier-slot-element="image"]');
     if (!img || !color) return;
 
-    // Use configured color images
     const key = color.toLowerCase().replace(/\s+/g, '-');
-    if (CONFIG.colors.images[key]) {
-      img.style.opacity = '0.5';
-      img.src = CONFIG.colors.images[key];
-      img.onload = () => img.style.opacity = '1';
+    const url = CONFIG.colors.images[key];
+    if (!url) return;
+
+    if (img.src === url || img.src.endsWith(url)) {
+      // Already showing the right image — just make sure it's visible
+      img.style.opacity = '1';
+      return;
     }
+
+    img.style.opacity = '0.5';
+    img.src = url;
+    img.onload = () => { img.style.opacity = '1'; };
+    // Guard against cached images where onload never fires
+    if (img.complete) img.style.opacity = '1';
   }
 
   async _addToCartAndCheckout() {
@@ -874,6 +875,12 @@ class TierController {
         // Remove inactive class and add animation class to show step two
         stepTwo.classList.remove('is-inactive');
         stepTwo.classList.add('step-revealed');
+
+        // Re-apply slot defaults NOW that elements are visible — browsers don't
+        // reliably commit select.value assignments on display:none containers.
+        for (let i = 1; i <= this.currentTier; i++) {
+          this._setSlotDefaults(i);
+        }
 
         // Hide the first step's CTA wrapper
         const quantityCTA = document.querySelector('[data-next-component="quantity-cta"]');
