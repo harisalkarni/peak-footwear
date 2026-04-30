@@ -1,0 +1,8 @@
+{
+  "name": "peak-footwear",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node build.js",
+    "build:of04": "node build.js lorax-pairs/o/of04"
+  }
+}

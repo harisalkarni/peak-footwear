@@ -749,7 +749,6 @@ h1, h2, h3, h4, h5, h6,
 
 .trust-badge-2 {
   display: flex !important;
-  flex-direction: column !important;
   align-items: center !important;
   gap: 8px !important;
 }
@@ -763,10 +762,10 @@ h1, h2, h3, h4, h5, h6,
 .trust-badge--text {
   font-size: 10px !important;
   font-weight: 600 !important;
-  text-align: center !important;
+  text-align: left !important;
   text-transform: uppercase !important;
   line-height: 1.2 !important;
-  color: var(--brand-text) !important;
+  color: #5c5c5e !important;
 }
 
 .card-flags-2 {
@@ -1104,20 +1103,21 @@ h1, h2, h3, h4, h5, h6,
 /* === GUARANTEE SECTION === */
 .guarantee-section-wrapper {
   margin: 5px 0 !important;
+  flex-direction: column;
 }
 
 .guarantee-section {
   display: flex !important;
   gap: 12px !important;
   padding: 16px !important;
-  background-color: rgba(1, 106, 76, 0.05) !important;
+  background-color: #fff;
   border-radius: 8px !important;
   align-items: center !important;
 }
 
 .guarantee-section .image-10 {
-  width: 40px !important;
-  height: 40px !important;
+  width: 54px !important;
+  height: 54px !important;
   flex-shrink: 0 !important;
 }
 
@@ -1595,27 +1595,143 @@ button:focus-visible,
   line-height: 1.2 !important;
 }
 
-/* --- Color dropdown wrapper (thumb + select + caret) --- */
+/* --- Color dropdown wrapper --- */
 .cs2-color-wrapper {
-  display: flex !important;
-  align-items: center !important;
+  display: block !important;
   position: relative !important;
-  border: 1.5px solid #d0d0d0 !important;
-  border-radius: 6px !important;
-  background: #fafafa !important;
-  overflow: hidden !important;
-  height: 44px !important;
 }
 
-.cs2-color-thumb {
-  width: 38px !important;
-  height: 38px !important;
-  object-fit: cover !important;
-  flex-shrink: 0 !important;
-  border-right: 1.5px solid #e0e0e0 !important;
+/* --- Custom color image dropdown --- */
+.cs2-custom-color-select {
+  position: relative !important;
+  width: 100% !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+/* Trigger button (closed state) */
+.cs2-color-trigger {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  padding: 8px 12px 8px 8px !important;
   background: #fff !important;
-  margin: 2px 0 2px 2px !important;
+  border: 1.5px solid #d0d0d0 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  transition: border-color 0.2s ease !important;
+  box-sizing: border-box !important;
+}
+
+.cs2-color-trigger:hover {
+  border-color: #aaa !important;
+}
+
+.cs2-custom-color-select.is-open .cs2-color-trigger {
+  border-color: var(--brand-primary) !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.cs2-color-trigger-img {
+  width: 70px !important;
+  height: 50px !important;
+  object-fit: contain !important;
+  flex-shrink: 0 !important;
   border-radius: 4px !important;
+  background: #f5f5f5 !important;
+}
+
+.cs2-color-trigger-name {
+  flex: 1 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #222 !important;
+  line-height: 1.2 !important;
+}
+
+.cs2-caret-icon {
+  flex-shrink: 0 !important;
+  width: 12px !important;
+  height: 8px !important;
+  transition: transform 0.2s ease !important;
+}
+
+.cs2-custom-color-select.is-open .cs2-caret-icon {
+  transform: rotate(180deg) !important;
+}
+
+/* Options dropdown panel */
+.cs2-color-options {
+  display: none !important;
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: #fff !important;
+  border: 1.5px solid var(--brand-primary) !important;
+  border-top: none !important;
+  border-radius: 0 0 8px 8px !important;
+  max-height: 320px !important;
+  overflow-y: auto !important;
+  z-index: 999 !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
+}
+
+.cs2-custom-color-select.is-open .cs2-color-options {
+  display: block !important;
+}
+
+/* Individual option row */
+.cs2-color-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 10px 12px !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.cs2-color-option:last-child {
+  border-bottom: none !important;
+}
+
+.cs2-color-option:hover {
+  background: #f5f5f5 !important;
+}
+
+.cs2-color-option.is-selected {
+  background: #e8f5f0 !important;
+}
+
+.cs2-color-option img {
+  width: 80px !important;
+  height: 56px !important;
+  object-fit: contain !important;
+  flex-shrink: 0 !important;
+  border-radius: 4px !important;
+  background: #f5f5f5 !important;
+}
+
+.cs2-color-option span {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #222 !important;
+  line-height: 1.3 !important;
+}
+
+/* Scrollbar styling for options panel */
+.cs2-color-options::-webkit-scrollbar {
+  width: 4px !important;
+}
+.cs2-color-options::-webkit-scrollbar-track {
+  background: #f5f5f5 !important;
+}
+.cs2-color-options::-webkit-scrollbar-thumb {
+  background: #ccc !important;
+  border-radius: 2px !important;
 }
 
 /* --- Size dropdown wrapper --- */
@@ -1794,11 +1910,12 @@ button:focus-visible,
 
 /* --- Payment card flags in step two --- */
 .card-flags-2.cc-2step {
-  max-width: 260px !important;
+  max-width: 460px ;
   width: 100% !important;
   height: auto !important;
   display: block !important;
   margin: 0 auto !important;
+  margin-top: 1rem !important;
 }
 
 /* ============================================================

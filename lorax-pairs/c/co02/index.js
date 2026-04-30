@@ -505,7 +505,8 @@ class TierController {
 
         container.appendChild(slot);
 
-        // Setup listeners for the new selects
+        // Re-init listeners and color dropdowns for the new slot
+        this._setupColorDropdowns();
         this._setupVariantListeners();
       }
     }
@@ -542,6 +543,7 @@ class TierController {
         v.color = selectedColor;
         colorSelect.value = selectedColor;
         console.log(`Slot ${slotNum} default color set to:`, selectedColor);
+        this._updateColorDropdown(slot, selectedColor);
         this._updateImage(slot, selectedColor);
         this._updateSizeOptionsForColor(slot, selectedColor);
       }
@@ -591,7 +593,103 @@ class TierController {
     setTimeout(() => notification.remove(), duration);
   }
 
+  _setupColorDropdowns() {
+    document.querySelectorAll('.cs2-custom-color-select').forEach(dropdown => {
+      // Avoid attaching duplicate listeners
+      if (dropdown._colorDropdownInit) return;
+      dropdown._colorDropdownInit = true;
+
+      const trigger = dropdown.querySelector('.cs2-color-trigger');
+      const optionsPanel = dropdown.querySelector('.cs2-color-options');
+      const slot = dropdown.closest('[next-tier-slot]');
+      const hiddenSelect = slot?.querySelector('select[next-variant-option="color"]');
+
+      if (!trigger || !optionsPanel) return;
+
+      // Toggle open/close on trigger click
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.contains('is-open');
+        // Close all other open dropdowns first
+        document.querySelectorAll('.cs2-custom-color-select.is-open').forEach(d => {
+          if (d !== dropdown) {
+            d.classList.remove('is-open');
+            d.querySelector('.cs2-color-trigger')?.setAttribute('aria-expanded', 'false');
+          }
+        });
+        dropdown.classList.toggle('is-open', !isOpen);
+        trigger.setAttribute('aria-expanded', String(!isOpen));
+      });
+
+      // Option selection
+      optionsPanel.querySelectorAll('.cs2-color-option').forEach(option => {
+        option.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const value = option.dataset.value;
+          const label = option.dataset.label;
+          const img   = option.dataset.img;
+
+          // Update trigger appearance
+          const triggerImg  = trigger.querySelector('.cs2-color-trigger-img');
+          const triggerName = trigger.querySelector('.cs2-color-trigger-name');
+          if (triggerImg)  { triggerImg.src = img; triggerImg.alt = label; }
+          if (triggerName) triggerName.textContent = label;
+
+          // Mark selected option
+          optionsPanel.querySelectorAll('.cs2-color-option').forEach(o => o.classList.remove('is-selected'));
+          option.classList.add('is-selected');
+
+          // Sync hidden select and fire change event so existing JS picks it up
+          if (hiddenSelect) {
+            hiddenSelect.value = value;
+            hiddenSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+
+          // Close dropdown
+          dropdown.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+        });
+      });
+    });
+
+    // Close any open dropdown when clicking outside
+    if (!document._colorDropdownOutsideInit) {
+      document._colorDropdownOutsideInit = true;
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.cs2-custom-color-select.is-open').forEach(d => {
+          d.classList.remove('is-open');
+          d.querySelector('.cs2-color-trigger')?.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+  }
+
+  _updateColorDropdown(slot, colorValue) {
+    const dropdown = slot.querySelector('.cs2-custom-color-select');
+    if (!dropdown) return;
+
+    const option = dropdown.querySelector(`.cs2-color-option[data-value="${colorValue}"]`);
+    if (!option) return;
+
+    const label = option.dataset.label;
+    const img   = option.dataset.img;
+    const trigger = dropdown.querySelector('.cs2-color-trigger');
+    const triggerImg  = trigger?.querySelector('.cs2-color-trigger-img');
+    const triggerName = trigger?.querySelector('.cs2-color-trigger-name');
+
+    if (triggerImg)  { triggerImg.src = img; triggerImg.alt = label; }
+    if (triggerName) triggerName.textContent = label;
+
+    // Mark correct option as selected
+    dropdown.querySelectorAll('.cs2-color-option').forEach(o => {
+      o.classList.toggle('is-selected', o.dataset.value === colorValue);
+    });
+  }
+
   _setupVariantListeners() {
+    // Setup custom image color dropdowns
+    this._setupColorDropdowns();
+
     // Setup listeners for all variant selects
     document.querySelectorAll('select[next-variant-option]').forEach(select => {
       select.addEventListener('change', (e) => {
