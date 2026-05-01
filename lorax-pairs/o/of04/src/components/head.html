@@ -110,6 +110,25 @@
   <meta name="next-page-type" content="product">
   <meta name="next-debug" content="true">
 
+  <!-- 29next Campaign Tracking -->
+  <script>
+    (function () {
+      var s = document.createElement('script');
+      s.src = 'https://campaigns.apps.29next.com/js/v1/campaign/';
+      s.async = true;
+      s.onload = function () {
+        nextCampaign.config({
+          apiKey: "6AFua4vXCfoDW8QzhquvrDSmdkGcpWyW3E84bVeZ"
+        });
+        nextCampaign.event('page_view', {
+          title: document.title,
+          url: window.location.href
+        });
+      };
+      document.head.appendChild(s);
+    })();
+  </script>
+
   <script>
     function getDate(days) {
       const monthNames = [
