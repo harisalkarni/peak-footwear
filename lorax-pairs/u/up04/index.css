@@ -314,7 +314,9 @@ img {
 }
 
 .u-font-bold {
-    font-weight: 700;
+    font-weight: 500;
+    font-size: 13px;
+    color: #989898;
 }
 
 /* Heading */
@@ -481,6 +483,7 @@ img {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    padding: 0 30px;
 }
 
 .sg-upsell_qty-wrap {
@@ -535,7 +538,6 @@ img {
     justify-content: space-around;
     gap: 20px;
     padding: 30px 20px;
-    background-color: #f8f8f8;
     border-radius: 12px;
 }
 
@@ -689,7 +691,7 @@ img {
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .trust-badge {
@@ -1466,3 +1468,79 @@ html.next-display-ready [data-next-await]::before {
     }
 }
 
+
+
+/* new style */
+.usps-banner{
+  width:100%;
+  padding:14px 0;
+}
+
+.usps-container{
+  max-width:1100px;
+  margin:auto;
+  border:3px solid #2f5fa8;
+  border-radius:6px;
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+/* ICON */
+.usps-icon{
+  width:54px;
+  min-width:54px;
+}
+
+.usps-icon svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+
+/* TEXT */
+.usps-text{
+  font-size:15px;
+  line-height:1.5;
+  color:#2b2b2b;
+}
+
+.test-duku{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* TABLET */
+@media(max-width:768px){
+
+  .usps-container{
+    padding:12px;
+    gap:12px;
+  }
+
+  .usps-text{
+    font-size:14px;
+  }
+
+  .usps-icon{
+    width:44px;
+    min-width:44px;
+  }
+}
+
+/* SMALL MOBILE */
+@media(max-width:480px){
+
+  .usps-container{
+    flex-direction:row;
+    align-items:flex-start;
+  }
+
+  .usps-text{
+    font-size:14px;
+    line-height:1.4;
+  }
+}
