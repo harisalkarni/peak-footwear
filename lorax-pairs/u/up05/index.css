@@ -1063,6 +1063,12 @@ html.next-display-ready [data-next-await]::before {
     }
 }
 
+@media screen and (min-width: 1000px) {
+    .new-nih {
+        width: 70% !important;
+    }
+}
+
 /* MOBILE RESPONSIVE - Matches up04.html exactly */
 @media screen and (max-width: 768px) {
     .container {
@@ -1084,6 +1090,10 @@ html.next-display-ready [data-next-await]::before {
     
     .os-bundle__selector {
         gap: 12px;
+    }
+
+    .select-quantity-wrapper {
+        padding: 0;
     }
     
     .os-bundle__progress-bar {
@@ -1534,7 +1544,6 @@ html.next-display-ready [data-next-await]::before {
 
   .usps-container{
     flex-direction:row;
-    align-items:flex-start;
   }
 
   .usps-text{

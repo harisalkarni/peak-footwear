@@ -1010,6 +1010,12 @@ html.next-display-ready [data-next-await]::before {
     }
 }
 
+@media screen and (min-width: 1000px) {
+    .new-nih {
+        width: 70% !important;
+    }
+}
+
 /* MOBILE RESPONSIVE - Matches up04.html exactly */
 @media screen and (max-width: 768px) {
     .container {
