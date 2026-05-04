@@ -1,118 +1,90 @@
 // Olympus MV Selection - Lorax Pro Configuration
 // Peak Footwear - Multi-Variant Checkout
 
-// Direct lookup table sourced from peakfootwear.29next.store (product ID 3424)
-// Maps color slug + size string → 29next variant ID
-const LORAX_VARIANT_IDS = {
-    'white-pink': {
-        'US Women 6 - US Men 4':              3432,
-        'US Women 7 - US Men 5':              3434,
-        'US Women 7.5 - US Men 5.5':          3435,
-        'US Women 8/8.5 - US Men 6/6.5':      3437,
-        'US Women 9/9.5 - US Men 7/7.5':      3439,
-        'US Women 10/10.5 - US Men 8/8.5':    3440,
-        'US Women 11/11.5 - US Men 9/9.5':    3442,
-        'US Women 12/12.5 - US Men 10/10.5':  3444,
-        'US Women 13/13.5 - US Men 11/11.5':  3445,
-    },
-    'white-black': {
-        'US Women 6 - US Men 4':              3447,
-        'US Women 7 - US Men 5':              3449,
-        'US Women 7.5 - US Men 5.5':          3451,
-        'US Women 8/8.5 - US Men 6/6.5':      3452,
-        'US Women 9/9.5 - US Men 7/7.5':      3454,
-        'US Women 10/10.5 - US Men 8/8.5':    3456,
-        'US Women 11/11.5 - US Men 9/9.5':    3458,
-        'US Women 12/12.5 - US Men 10/10.5':  3460,
-        'US Women 13/13.5 - US Men 11/11.5':  3461,
-    },
-    'white-gray': {
-        'US Women 6 - US Men 4':              3463,
-        'US Women 7 - US Men 5':              3465,
-        'US Women 7.5 - US Men 5.5':          3467,
-        'US Women 8/8.5 - US Men 6/6.5':      3469,
-        'US Women 9/9.5 - US Men 7/7.5':      3471,
-        'US Women 10/10.5 - US Men 8/8.5':    3472,
-        'US Women 11/11.5 - US Men 9/9.5':    3474,
-        'US Women 12/12.5 - US Men 10/10.5':  3475,
-        'US Women 13/13.5 - US Men 11/11.5':  3477,
-    },
-    'black': {
-        'US Women 6 - US Men 4':              3479,
-        'US Women 7 - US Men 5':              3481,
-        'US Women 7.5 - US Men 5.5':          3483,
-        'US Women 8/8.5 - US Men 6/6.5':      3485,
-        'US Women 9/9.5 - US Men 7/7.5':      3487,
-        'US Women 10/10.5 - US Men 8/8.5':    3489,
-        'US Women 11/11.5 - US Men 9/9.5':    3491,
-        'US Women 12/12.5 - US Men 10/10.5':  3493,
-        'US Women 13/13.5 - US Men 11/11.5':  3495,
-        'US Women 14 - US Men 12':            3496,
-        'US Women 15 - US Men 13':            3499,
-        'US Women 16 - US Men 14':            3501,
-    },
-    'white-blue': {
-        'US Women 6 - US Men 4':              3503,
-        'US Women 7 - US Men 5':              3504,
-        'US Women 7.5 - US Men 5.5':          3506,
-        'US Women 8/8.5 - US Men 6/6.5':      3509,
-        'US Women 9/9.5 - US Men 7/7.5':      3511,
-        'US Women 10/10.5 - US Men 8/8.5':    3513,
-        'US Women 11/11.5 - US Men 9/9.5':    3515,
-        'US Women 12/12.5 - US Men 10/10.5':  3517,
-        'US Women 13/13.5 - US Men 11/11.5':  3518,
-        'US Women 14 - US Men 12':            3520,
-        'US Women 15 - US Men 13':            3522,
-        'US Women 16 - US Men 14':            3524,
-    },
-    'blue': {
-        'US Women 9/9.5 - US Men 7/7.5':      3525,
-        'US Women 10/10.5 - US Men 8/8.5':    3529,
-        'US Women 11/11.5 - US Men 9/9.5':    3535,
-        'US Women 12/12.5 - US Men 10/10.5':  3539,
-        'US Women 13/13.5 - US Men 11/11.5':  3543,
-        'US Women 14 - US Men 12':            3547,
-        'US Women 15 - US Men 13':            3551,
-        'US Women 16 - US Men 14':            3554,
-    },
-    'orange': {
-        'US Women 9/9.5 - US Men 7/7.5':      3557,
-        'US Women 10/10.5 - US Men 8/8.5':    3559,
-        'US Women 11/11.5 - US Men 9/9.5':    3561,
-        'US Women 12/12.5 - US Men 10/10.5':  3564,
-        'US Women 13/13.5 - US Men 11/11.5':  3567,
-        'US Women 14 - US Men 12':            3571,
-        'US Women 15 - US Men 13':            3573,
-        'US Women 16 - US Men 14':            3576,
-    },
-    'pink': {
-        'US Women 6 - US Men 4':              3578,
-        'US Women 7 - US Men 5':              3581,
-        'US Women 7.5 - US Men 5.5':          3583,
-        'US Women 8/8.5 - US Men 6/6.5':      3586,
-        'US Women 9/9.5 - US Men 7/7.5':      3588,
-        'US Women 10/10.5 - US Men 8/8.5':    3591,
-        'US Women 11/11.5 - US Men 9/9.5':    3594,
-    },
+// ============================================
+// DYNAMIC CAMPAIGN PACKAGE MAP
+// Built at runtime from window.next.getCampaignData()
+// so it always matches whatever campaign is loaded —
+// no manual ref_id updates needed when the campaign changes.
+// ============================================
+
+// Maps color slug → { size string → campaign package ref_id }
+// Populated by buildPackageMapFromCampaign() once the SDK fires 'next:initialized'
+const CAMPAIGN_PACKAGE_MAP = {};
+
+// Color display name (as it appears in 29next campaign package names) → slug used in HTML
+const COLOR_DISPLAY_TO_SLUG = {
+  'white & pink':  'white-pink',
+  'white & black': 'white-black',
+  'white & gray':  'white-gray',
+  'black':         'black',
+  'white & blue':  'white-blue',
+  'blue':          'blue',
+  'orange':        'orange',
+  'pink':          'pink',
 };
 
-function calculatePackageId(color, size, quantity) {
-    const colorMap = LORAX_VARIANT_IDS[color];
-    if (!colorMap) {
-        console.error('Color not found in variant table:', color);
-        return null;
+/**
+ * Parses every campaign package name and extracts color + size → ref_id.
+ * Package names follow the format: "[Campaign Name] - [Color] / [Size]"
+ * e.g. "Lorax Pro - White & Pink / US Women 8/8.5 - US Men 6/6.5"
+ */
+function buildPackageMapFromCampaign() {
+  const cd = window.next.getCampaignData();
+  if (!cd?.packages?.length) {
+    console.error('[PackageMap] No packages found in campaign data. Check 29next campaign setup.');
+    return;
+  }
+
+  let mapped = 0;
+  cd.packages.forEach(pkg => {
+    const name = pkg.name || '';
+
+    // Strip campaign-name prefix: everything up to and including the last " - " before "/"
+    // e.g. "My Campaign - White & Pink / US Women 8" → "White & Pink / US Women 8"
+    const slashIdx = name.indexOf(' / ');
+    if (slashIdx === -1) return;
+
+    // Find the last " - " that appears before the slash
+    const prefix = name.substring(0, slashIdx);
+    const dashIdx = prefix.lastIndexOf(' - ');
+    const colorDisplay = (dashIdx !== -1 ? prefix.substring(dashIdx + 3) : prefix).trim().toLowerCase();
+    const size = name.substring(slashIdx + 3).trim();
+
+    const colorSlug = COLOR_DISPLAY_TO_SLUG[colorDisplay];
+    if (!colorSlug) {
+      console.warn('[PackageMap] Unknown color in package name:', name);
+      return;
     }
-    const packageId = colorMap[size];
-    if (!packageId) {
-        console.error('Size not available for this color:', { color, size });
-        return null;
-    }
-    console.log('Package ID lookup:', { color, size, packageId });
-    return packageId;
+
+    if (!CAMPAIGN_PACKAGE_MAP[colorSlug]) CAMPAIGN_PACKAGE_MAP[colorSlug] = {};
+    CAMPAIGN_PACKAGE_MAP[colorSlug][size] = pkg.ref_id;
+    mapped++;
+  });
+
+  console.log(`[PackageMap] Built from campaign "${cd.name}" (ID ${cd.id}): ${mapped} packages across ${Object.keys(CAMPAIGN_PACKAGE_MAP).length} colors`);
+  if (mapped === 0) {
+    console.error('[PackageMap] Zero packages mapped — check that package names follow the format "[Campaign] - [Color] / [Size]"');
+  }
+}
+
+function calculatePackageId(color, size) {
+  const colorMap = CAMPAIGN_PACKAGE_MAP[color];
+  if (!colorMap) {
+    console.error('[PackageMap] Color not found:', color, '| Available:', Object.keys(CAMPAIGN_PACKAGE_MAP));
+    return null;
+  }
+  const packageId = colorMap[size];
+  if (!packageId) {
+    console.error('[PackageMap] Size not found for color:', { color, size }, '| Available sizes:', Object.keys(colorMap));
+    return null;
+  }
+  console.log('[PackageMap] Resolved:', { color, size, packageId });
+  return packageId;
 }
 
 // ============================================
-// CONFIGURATION SECTION - LORAX PRO
+// CONFIGURATION SECTION - LORAX PRO - NEXTCOMMERCE
 // ============================================
 const CONFIG = {
   // Navigation URLs
@@ -120,17 +92,17 @@ const CONFIG = {
     checkoutStep2: '/lorax-pairs/c/co03/', // Billing page after variant selection
   },
 
-  // Product Images by Color (Lorax Pro)
+  // Product Images by Color (Lorax Pro - Nextcommerce, product ID 12939)
   colors: {
     images: {
-      'white-pink': 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_Main.webp',
-      'black': 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_Black.webp',
-      'pink': 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_Pink.webp',
-      'white-black': 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_BW.webp',
-      'white-gray': 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_Gray.webp',
-      'blue': 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_Blue.webp',
-      'orange': 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_Orange.webp',
-      'white-blue': 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_BlueW.webp',
+      'white-pink': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages5_214a4d67-1698-4eef-ae62-978dcb5bd4d6.jpg',
+      'white-black': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/Image1_1.jpg',
+      'white-gray': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/Lorax_Gray.png',
+      'black': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages4_d436c985-a8cb-46e2-89cc-3e71606ad0bc.jpg',
+      'white-blue': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/0d4a4765-f654-4632-8e86-d8de02417cf7_2_2.jpg',
+      'blue': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages1_b55affef-da13-44f9-869a-9b41780aa691.jpg',
+      'orange': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages2_946af502-d31e-44bd-a6e8-a8007796b445.jpg',
+      'pink': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages3_f7466438-5b73-4e74-88b4-603a4a06425c.jpg',
     },
     styles: {
       'white-pink': 'linear-gradient(135deg, #FFFFFF 50%, #FFB6C1 50%)',
@@ -158,6 +130,7 @@ const CONFIG = {
   // Display Order for Dropdowns (matches backend format)
   displayOrder: {
     sizes: [
+      'US Women 5 - US Men 3',
       'US Women 6 - US Men 4',
       'US Women 7 - US Men 5',
       'US Women 7.5 - US Men 5.5',
@@ -192,7 +165,7 @@ const CONFIG = {
   // Exit Intent Configuration
   exitIntent: {
     enabled: false,
-    image: 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_Main.webp',
+    image: 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages5_214a4d67-1698-4eef-ae62-978dcb5bd4d6.jpg',
     discountText: '🎉 Extra 10% OFF Applied!',
   },
 
@@ -727,8 +700,8 @@ class TierController {
     const sizeSelect = slot.querySelector('select[next-variant-option="size"]');
     if (!sizeSelect) return;
 
-    // Available sizes come directly from the lookup table — single source of truth
-    const availableSizes = LORAX_VARIANT_IDS[color] ? Object.keys(LORAX_VARIANT_IDS[color]) : [];
+    // Available sizes come directly from the campaign package map — single source of truth
+    const availableSizes = CAMPAIGN_PACKAGE_MAP[color] ? Object.keys(CAMPAIGN_PACKAGE_MAP[color]) : [];
     const slotNum = +slot.getAttribute('next-tier-slot');
 
     Array.from(sizeSelect.options).forEach(option => {
@@ -1121,6 +1094,8 @@ class ProgressBar {
 
 // Initialize when Next SDK is ready
 window.addEventListener('next:initialized', () => {
+  // Build the color+size → ref_id map from live campaign data (must run before TierController)
+  buildPackageMapFromCampaign();
   window.tierController = new TierController();
   
   const btn = document.querySelector('[os-checkout="verify-step"]');
