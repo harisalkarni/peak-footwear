@@ -29,6 +29,12 @@ const COLOR_DISPLAY_TO_SLUG = {
  * Package names follow the format: "[Campaign Name] - [Color] / [Size]"
  * e.g. "Lorax Pro - White & Pink / US Women 8/8.5 - US Men 6/6.5"
  */
+// Live pricing from campaign — populated by buildPackageMapFromCampaign()
+const CO02_CAMPAIGN_PRICING = {
+  retailPrice: null, // price_retail from campaign package (full retail per pair)
+  offerPrice:  null, // price_total from campaign package (tier-1 offer price per pair)
+};
+
 function buildPackageMapFromCampaign() {
   const cd = window.next.getCampaignData();
   if (!cd?.packages?.length) {
@@ -59,13 +65,65 @@ function buildPackageMapFromCampaign() {
 
     if (!CAMPAIGN_PACKAGE_MAP[colorSlug]) CAMPAIGN_PACKAGE_MAP[colorSlug] = {};
     CAMPAIGN_PACKAGE_MAP[colorSlug][size] = pkg.ref_id;
+
+    // Capture retail + offer price from the first successfully mapped package
+    if (CO02_CAMPAIGN_PRICING.retailPrice === null) {
+      if (pkg.price_retail != null) CO02_CAMPAIGN_PRICING.retailPrice = parseFloat(pkg.price_retail);
+      if (pkg.price_total  != null) CO02_CAMPAIGN_PRICING.offerPrice  = parseFloat(pkg.price_total);
+    }
+
     mapped++;
   });
 
   console.log(`[PackageMap] Built from campaign "${cd.name}" (ID ${cd.id}): ${mapped} packages across ${Object.keys(CAMPAIGN_PACKAGE_MAP).length} colors`);
+  console.log('[PackageMap] Campaign pricing:', CO02_CAMPAIGN_PRICING);
   if (mapped === 0) {
     console.error('[PackageMap] Zero packages mapped — check that package names follow the format "[Campaign] - [Color] / [Size]"');
   }
+
+  // Update tier prices in the DOM with live campaign values
+  updateTierPricesFromCampaign();
+}
+
+/**
+ * Updates the three tier price boxes with live prices from the campaign.
+ * Uses retail price from campaign + discount % from CONFIG.discounts.base.
+ * Falls back gracefully — if campaign pricing is unavailable, HTML values stay.
+ */
+function updateTierPricesFromCampaign() {
+  const retail = CO02_CAMPAIGN_PRICING.retailPrice;
+  if (retail === null) {
+    console.warn('[PackageMap] No retail price available from campaign — keeping hardcoded HTML prices');
+    return;
+  }
+
+  [1, 2, 3].forEach(tier => {
+    const group = document.querySelector(`.pf-selector-group[data-next-tier="${tier}"]`);
+    if (!group) return;
+
+    const discountPct  = CONFIG.discounts.base[tier] / 100;
+    const pricePerPair = retail * (1 - discountPct);
+    const totalRetail  = retail * tier;
+    const saveLabel    = `Save ${CONFIG.discounts.base[tier]}%`;
+
+    // Price per pair (keep the "/ea" sub-span intact)
+    const priceEl = group.querySelector('.pf-tier-price');
+    if (priceEl) {
+      const subSpan = priceEl.querySelector('.pf-tier-price-sub');
+      priceEl.textContent = `$${pricePerPair.toFixed(2)}`;
+      if (subSpan) priceEl.appendChild(subSpan); // re-attach "/ea" span
+    }
+
+    // Total retail (strikethrough original price)
+    const originalEl = group.querySelector('.pf-tier-original');
+    if (originalEl) originalEl.textContent = `$${totalRetail.toFixed(2)}`;
+
+    // Savings label (only update if exit discount not active — exit discount is handled separately)
+    const savingsEl = group.querySelector('.pf-tier-savings');
+    if (savingsEl) savingsEl.textContent = saveLabel;
+  });
+
+  console.log(`[PackageMap] Tier prices updated from campaign retail $${retail}`);
 }
 
 function calculatePackageId(color, size) {
@@ -830,19 +888,33 @@ class TierController {
   // OOS checking removed - not needed
 
   _updateSavings() {
-    // Savings are now hard-coded in the HTML for the tier selection
-    // Only update if exit discount is active
     if (this.exitDiscountActive) {
+      // Exit discount active: update savings label + recalculate price using exit discount %
+      const retail = CO02_CAMPAIGN_PRICING.retailPrice;
       [1, 2, 3].forEach(tier => {
         const group = document.querySelector(`.pf-selector-group[data-next-tier="${tier}"]`);
-        if (group) {
-          const savingsEl = group.querySelector('.pf-tier-savings');
-          const discounts = CONFIG.discounts.display[tier];
-          if (savingsEl && discounts) {
-            savingsEl.textContent = `Save ${discounts.withExit}`;
+        if (!group) return;
+        const discounts = CONFIG.discounts.display[tier];
+        if (!discounts) return;
+
+        const savingsEl = group.querySelector('.pf-tier-savings');
+        if (savingsEl) savingsEl.textContent = `Save ${discounts.withExit}`;
+
+        // Also update price per pair with exit discount applied (if we have live retail)
+        if (retail !== null) {
+          const exitDiscountPct = (CONFIG.discounts.base[tier] + CONFIG.discounts.exit) / 100;
+          const exitPricePerPair = retail * (1 - exitDiscountPct);
+          const priceEl = group.querySelector('.pf-tier-price');
+          if (priceEl) {
+            const subSpan = priceEl.querySelector('.pf-tier-price-sub');
+            priceEl.textContent = `$${exitPricePerPair.toFixed(2)}`;
+            if (subSpan) priceEl.appendChild(subSpan);
           }
         }
       });
+    } else {
+      // No exit discount — refresh from campaign pricing (handles profile changes)
+      updateTierPricesFromCampaign();
     }
   }
 

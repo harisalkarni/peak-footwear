@@ -1160,6 +1160,13 @@ h1, h2, h3, h4, h5, h6,
 .pf-text-weight-bold {
   font-weight: 700 !important;
 }
+.test-aja {
+  color: #B73339 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  font-size: 15px !important;
+  letter-spacing: 0.5px !important;
+}
 
 .pf-star_wrapper {
   display: flex !important;
