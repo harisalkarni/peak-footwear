@@ -1,113 +1,125 @@
-// Next SDK Integration - Upsell Page (1 Pair Only)
+// Next SDK Integration - Upsell Page (Lorax Pro - Nextcommerce)
+// Product ID: 12939
 
-// Package ID Calculator for Lorax Pro Products (Upsell - IDs 294-384)
-// Based on actual JSON package structure from campaign-packages-lorax-pro---1_2_3-pairs---_lorax.json
-function calculatePackageId(color, size, quantity) {
-    // Color configuration with actual starting ref_ids and size counts (same structure as main packages)
-    // Upsell packages are offset by 293 from main package IDs (294 = 1 + 293)
-    const colorConfig = {
-        'white-pink':  { start: 1,  sizes: 10, hasSize6: true,  hasExtended: false }, // 294-303: 6-14
-        'black':       { start: 11, sizes: 12, hasSize6: true,  hasExtended: true },  // 304-315: 6-16
-        'pink':        { start: 23, sizes: 10, hasSize6: true,  hasExtended: false }, // 316-325: 6-14
-        'white-black': { start: 33, sizes: 12, hasSize6: true,  hasExtended: true },  // 326-337: 6-16
-        'white-gray':  { start: 45, sizes: 12, hasSize6: true,  hasExtended: true },  // 338-349: 6-16
-        'blue':        { start: 57, sizes: 12, hasSize6: true,  hasExtended: true },  // 350-361: 6-16
-        'orange':      { start: 69, sizes: 11, hasSize6: false, hasExtended: true },  // 362-372: 7-16 (NO size 6!)
-        'white-blue':  { start: 80, sizes: 12, hasSize6: true,  hasExtended: true }   // 373-384: 6-16
-    };
-    
-    // Size mapping from display format to index
-    // Supports both "US6 Women / US4 Men" format (HTML) and "US Women 6 - US Men 4" format (backend)
-    const sizeMap = {
-        'US6 Women / US4 Men': 0,
-        'US Women 6 - US Men 4': 0,
-        'US7 Women / US5 Men': 1,
-        'US Women 7 - US Men 5': 1,
-        'US7.5 Women / US5.5 Men': 2,
-        'US Women 7.5 - US Men 5.5': 2,
-        'US8 Women / US6 Men': 3,
-        'US Women 8/8.5 - US Men 6/6.5': 3,
-        'US9 Women / US7 Men': 4,
-        'US Women 9/9.5 - US Men 7/7.5': 4,
-        'US10 Women / US8 Men': 5,
-        'US Women 10/10.5 - US Men 8/8.5': 5,
-        'US11 Women / US9 Men': 6,
-        'US Women 11/11.5 - US Men 9/9.5': 6,
-        'US12 Women / US10 Men': 7,
-        'US Women 12/12.5 - US Men 10/10.5': 7,
-        'US13 Women / US11 Men': 8,
-        'US Women 13/13.5 - US Men 11/11.5': 8,
-        'US14 Women / US12 Men': 9,
-        'US Women 14 - US Men 12': 9,
-        'US15 Women / US13 Men': 10,
-        'US Women 15 - US Men 13': 10,
-        'US16 Women / US14 Men': 11,
-        'US Women 16 - US Men 14': 11
-    };
-    
-    const config = colorConfig[color];
-    if (!config) {
-        console.error('Color not found:', color);
-        return null;
+// ============================================
+// DYNAMIC CAMPAIGN PACKAGE MAP
+// Identical logic to co02/index.js — same product, same campaign.
+// Built at runtime from window.next.getCampaignData() so ref_ids
+// are always correct regardless of campaign changes.
+// ============================================
+
+// Maps color slug → { size string → campaign package ref_id }
+const UP01_PACKAGE_MAP = {};
+
+// Color display name (as it appears in campaign package names) → slug used in HTML selects
+const UP01_COLOR_DISPLAY_TO_SLUG = {
+    'white & pink':  'white-pink',
+    'white & black': 'white-black',
+    'white & gray':  'white-gray',
+    'black':         'black',
+    'white & blue':  'white-blue',
+    'blue':          'blue',
+    'orange':        'orange',
+    'pink':          'pink',
+};
+
+// Live product data from campaign
+const UP01_CAMPAIGN_DATA = {
+    productName: null,
+    retailPrice: null,
+    offerPrice:  null,
+};
+
+/**
+ * Parses every campaign package and extracts color + size → ref_id.
+ * Package names follow: "[Campaign Name] - [Color] / [Size]"
+ * e.g. "Lorax Pro - Nextcommerce - White & Pink / US Women 8/8.5 - US Men 6/6.5"
+ * Identical parsing logic to co02/index.js buildPackageMapFromCampaign().
+ */
+function buildUpsellPackageMap() {
+    const cd = window.next?.getCampaignData?.();
+    if (!cd?.packages?.length) {
+        console.error('[UP01] No packages in campaign data. Check 29next campaign setup.');
+        return;
     }
-    
-    const sizeIndex = sizeMap[size];
-    if (sizeIndex === undefined) {
-        console.error('Size not found:', size);
-        return null;
-    }
-    
-    console.log('Package ID calculation debug:', {
-        color: color,
-        size: size,
-        quantity: quantity,
-        sizeIndex: sizeIndex,
-        colorConfig: config
+
+    let mapped = 0;
+    cd.packages.forEach(pkg => {
+        const name = pkg.name || '';
+
+        // Strip campaign prefix: find last " - " before the first " / "
+        const slashIdx = name.indexOf(' / ');
+        if (slashIdx === -1) return;
+
+        const prefix = name.substring(0, slashIdx);
+        const dashIdx = prefix.lastIndexOf(' - ');
+        const colorDisplay = (dashIdx !== -1 ? prefix.substring(dashIdx + 3) : prefix).trim().toLowerCase();
+        const size = name.substring(slashIdx + 3).trim();
+
+        const colorSlug = UP01_COLOR_DISPLAY_TO_SLUG[colorDisplay];
+        if (!colorSlug) {
+            console.warn('[UP01] Unknown color in package name:', name);
+            return;
+        }
+
+        if (!UP01_PACKAGE_MAP[colorSlug]) UP01_PACKAGE_MAP[colorSlug] = {};
+        UP01_PACKAGE_MAP[colorSlug][size] = pkg.ref_id;
+
+        // Capture pricing + product name from the first matched package
+        if (UP01_CAMPAIGN_DATA.offerPrice === null) {
+            if (pkg.price_total  != null) UP01_CAMPAIGN_DATA.offerPrice  = parseFloat(pkg.price_total);
+            if (pkg.price_retail != null) UP01_CAMPAIGN_DATA.retailPrice = parseFloat(pkg.price_retail);
+            if (pkg.product_name)         UP01_CAMPAIGN_DATA.productName = pkg.product_name;
+            else if (pkg.name)            UP01_CAMPAIGN_DATA.productName = pkg.name.split(' - ')[0].trim();
+        }
+
+        mapped++;
     });
-    
-    // Validate size is available for this color
-    // Size 6 (index 0) is NOT available for Orange
-    if (sizeIndex === 0 && !config.hasSize6) {
-        console.error('Size 6 not available for color:', color);
+
+    console.log(`[UP01] Built package map: ${mapped} packages across ${Object.keys(UP01_PACKAGE_MAP).length} colors`);
+    if (mapped === 0) {
+        console.error('[UP01] Zero packages mapped — check package names follow "[Campaign] - [Color] / [Size]"');
+    }
+
+    // Apply live pricing to UP01_PRICING so updatePrices() uses campaign values
+    if (UP01_CAMPAIGN_DATA.offerPrice  !== null) UP01_PRICING.offerPrice  = UP01_CAMPAIGN_DATA.offerPrice;
+    if (UP01_CAMPAIGN_DATA.retailPrice !== null) UP01_PRICING.retailPrice = UP01_CAMPAIGN_DATA.retailPrice;
+}
+
+// Called when SDK fires 'next:initialized'
+window.addEventListener('next:initialized', () => {
+    buildUpsellPackageMap();
+});
+
+function calculatePackageId(color, size) {
+    const colorMap = UP01_PACKAGE_MAP[color];
+    if (!colorMap) {
+        console.error('[UP01] Color not found:', color, '| Available:', Object.keys(UP01_PACKAGE_MAP));
         return null;
     }
-    
-    // Extended sizes (15-16, indices 10-11) only for colors with hasExtended: true
-    if (sizeIndex >= 10 && !config.hasExtended) {
-        console.error('Extended sizes not available for color:', color);
+    const packageId = colorMap[size];
+    if (!packageId) {
+        console.error('[UP01] Size not found for color:', { color, size }, '| Available sizes:', Object.keys(colorMap));
         return null;
     }
-    
-    // Calculate size offset within color group
-    let sizeOffset;
-    if (config.hasSize6) {
-        // Colors with size 6: direct mapping
-        sizeOffset = sizeIndex;
-    } else {
-        // Orange: doesn't have size 6, so offset is sizeIndex - 1
-        sizeOffset = sizeIndex - 1;
-    }
-    
-    // Limit size offset to actual available sizes
-    if (sizeOffset >= config.sizes) {
-        console.error('Size offset exceeds available sizes:', { sizeOffset, availableSizes: config.sizes });
-        return null;
-    }
-    
-    // Upsell packages start at 294 (offset by 293 from main packages)
-    const UPSELL_BASE_OFFSET = 293;
-    
-    // Final package ID
-    const packageId = UPSELL_BASE_OFFSET + config.start + sizeOffset;
-    
-    console.log('Package ID calculation result:', {
-        upsellBaseOffset: UPSELL_BASE_OFFSET,
-        colorStart: config.start,
-        sizeOffset: sizeOffset,
-        finalPackageId: packageId
-    });
-    
+    console.log('[UP01] Resolved:', { color, size, packageId });
     return packageId;
+}
+
+// Pricing Configuration (overwritten with live campaign values on next:initialized)
+const UP01_PRICING = {
+    retailPrice: 149.95,
+    offerPrice:  39.95
+};
+
+// Update displayed prices
+function updatePrices(quantity) {
+    const retailTotal = (UP01_PRICING.retailPrice * quantity).toFixed(2);
+    const offerTotal  = (UP01_PRICING.offerPrice  * quantity).toFixed(2);
+    const originalPriceEl = document.getElementById('originalPrice');
+    const currentPriceEl  = document.getElementById('currentPrice');
+    if (originalPriceEl) originalPriceEl.textContent = `$${retailTotal}`;
+    if (currentPriceEl)  currentPriceEl.textContent  = `$${offerTotal}`;
 }
 
 // Swiper/Slider Initialization
@@ -320,7 +332,7 @@ window.addEventListener('next:initialized', function() {
             
             const color = colorSelect.value;
             const size = sizeSelect.value;
-            const packageId = calculatePackageId(color, size, 1);
+            const packageId = calculatePackageId(color, size);
             
             if (!packageId) {
                 alert('Unable to process your selection. Please try again.');
@@ -359,8 +371,8 @@ window.addEventListener('next:initialized', function() {
                     window.UnifiedTrackingBridge.track.upsellAccepted({
                         packageId: packageId,
                         quantity: 1,
-                        productName: `Lorax Pro - ${color} - ${size}`,
-                        price: 39.95,
+                        productName: UP01_CAMPAIGN_DATA.productName || `Lorax Pro - Nextcommerce - ${color} - ${size}`,
+                        price: UP01_CAMPAIGN_DATA.offerPrice ?? UP01_PRICING.offerPrice,
                         image: colorImageMap[color] || 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_Main.webp',
                         brand: 'Peak Footwear',
                         sku: `lorax-pro-${color}-${size}`
@@ -402,20 +414,23 @@ window.addEventListener('next:initialized', function() {
 window.addEventListener('load', function() {
     // Fire view content event for upsell page
     if (window.NextDataLayer) {
+        const _offerPrice  = UP01_CAMPAIGN_DATA.offerPrice  ?? UP01_PRICING.offerPrice;
+        const _retailPrice = UP01_CAMPAIGN_DATA.retailPrice ?? UP01_PRICING.retailPrice;
+        const _productName = UP01_CAMPAIGN_DATA.productName || 'Lorax Pro - Nextcommerce';
         window.NextDataLayer.push({
             event: 'dl_view_item',
             ecommerce: {
                 currency: 'USD',
-                value: 39.95,
+                value: _offerPrice,
                 items: [{
-                    item_id: 'lorax-pro-upsell',
-                    item_name: 'Lorax Pro - Upsell Offer (73% Off)',
+                    item_id: 'lorax-pro-nextcommerce-upsell',
+                    item_name: `${_productName} - Upsell Offer`,
                     item_category: 'footwear',
                     item_brand: 'Peak Footwear',
-                    price: 39.95,
+                    price: _offerPrice,
                     quantity: 1,
                     item_sku: 'LORAX-PRO-UPSELL',
-                    discount: 109.95
+                    discount: parseFloat((_retailPrice - _offerPrice).toFixed(2))
                 }]
             }
         });
@@ -449,4 +464,4 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Accessibility enhancements applied');
 });
 
-console.log('Peak Footwear Upsell Page JavaScript with Next SDK integration loaded successfully');
+console.log('Peak Footwear Upsell Page 1 (Lorax Pro - Nextcommerce, product 12939) JavaScript loaded successfully');

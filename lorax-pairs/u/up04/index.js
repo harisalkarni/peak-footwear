@@ -1,25 +1,128 @@
-// Next SDK Integration - Upsell Page (Premium Insoles - Pairs Campaign)
+// Next SDK Integration - Upsell Page (Massage Insole - Nextcommerce)
+// Product ID: 13045
 
-// Package ID Calculator for Premium Insoles (Pairs Campaign)
-function calculatePackageId(size) {
-    // Package IDs are stored directly in the size value
-    // 385: US Women 6-9.5
-    // 386: US Women 10-14
-    // 387: US Men 4-7.5
-    // 388: US Men 8-12
-    
-    const packageId = parseInt(size);
-    
-    console.log('Package ID calculation:', {
-        size: size,
-        packageId: packageId
+// ============================================
+// DYNAMIC UPSELL PACKAGE MAP
+// Built at runtime from window.next.getCampaignData() offers/packages
+// so it always uses the correct campaign ref_id automatically.
+// Key format: "${color}-${wSize}/${mSize}"  e.g. "orange-w6/m5"
+// ============================================
+
+const UP04_PACKAGE_MAP = {};
+
+// Live product data from campaign — overrides hardcoded defaults when SDK loads
+const UP04_CAMPAIGN_DATA = {
+    productName: null,
+    retailPrice: null,
+    offerPrice:  null,
+};
+
+// Color display name (lowercase, as in campaign package) → slug used in HTML select value
+const UP04_COLOR_MAP = {
+    'orange': 'orange',
+    'black':  'black',
+};
+
+/**
+ * Updates the page DOM with live product data from the campaign SDK.
+ */
+function updateProductDataFromCampaign() {
+    if (UP04_CAMPAIGN_DATA.productName) {
+        const titleEls = document.querySelectorAll('[data-up04-product-name]');
+        titleEls.forEach(el => { el.textContent = UP04_CAMPAIGN_DATA.productName; });
+        console.log('[UP04] Product name updated from campaign:', UP04_CAMPAIGN_DATA.productName);
+    }
+
+    const selectedToggle = document.querySelector('[data-next-upsell-quantity-toggle].next-selected');
+    const currentQty = selectedToggle ? parseInt(selectedToggle.getAttribute('data-next-upsell-quantity-toggle')) : 1;
+    updatePrices(currentQty);
+    console.log('[UP04] Prices refreshed from campaign data at qty:', currentQty);
+}
+
+/**
+ * Builds color+size → ref_id map from campaign offers/packages at runtime.
+ * Package names follow: "[Campaign Name] - [Color] / [W-size] / [M-size]"
+ * e.g. "Massage Insole - Nextcommerce - Orange / W6 / M5"
+ */
+function buildUpsellPackageMap() {
+    const cd = window.next?.getCampaignData?.();
+    const allPackages = [...(cd?.packages || []), ...(cd?.offers || [])];
+
+    if (!allPackages.length) {
+        console.warn('[UP04] No packages/offers in campaign data');
+        return;
+    }
+
+    let mapped = 0;
+    allPackages.forEach(pkg => {
+        const name = (pkg.name || '').toLowerCase();
+        // Match massage insole packages
+        if (!name.includes('massage') && !name.includes('insole')) return;
+
+        // Package name format: "[Campaign] - [Color] / [W-size] / [M-size]"
+        // Strip campaign prefix: everything after the last " - "
+        let variantPart = name;
+        const dashIdx = variantPart.lastIndexOf(' - ');
+        if (dashIdx !== -1) variantPart = variantPart.substring(dashIdx + 3).trim();
+
+        // Split by " / " → [color, wSize, mSize]
+        const parts = variantPart.split(' / ').map(p => p.trim());
+        if (parts.length < 3) {
+            console.warn('[UP04] Unexpected package name format (need Color / W-size / M-size):', pkg.name);
+            return;
+        }
+
+        const [colorPart, wSizePart, mSizePart] = parts;
+        const colorSlug = UP04_COLOR_MAP[colorPart];
+        if (!colorSlug) {
+            console.warn('[UP04] Unrecognised color in package:', pkg.name, '→', colorPart);
+            return;
+        }
+
+        // Size slug combines W and M sizes: "w6/m5"
+        const sizeSlug = `${wSizePart}/${mSizePart}`;
+        const key = `${colorSlug}-${sizeSlug}`;
+        UP04_PACKAGE_MAP[key] = pkg.ref_id;
+
+        // Capture pricing + product name from the first matched package
+        if (UP04_CAMPAIGN_DATA.offerPrice === null) {
+            if (pkg.price_total  != null) UP04_CAMPAIGN_DATA.offerPrice  = parseFloat(pkg.price_total);
+            if (pkg.price_retail != null) UP04_CAMPAIGN_DATA.retailPrice = parseFloat(pkg.price_retail);
+            if (pkg.product_name)         UP04_CAMPAIGN_DATA.productName = pkg.product_name;
+            else if (pkg.name)            UP04_CAMPAIGN_DATA.productName = pkg.name.split(' - ')[0].trim();
+        }
+
+        mapped++;
     });
-    
-    if (isNaN(packageId) || packageId < 385 || packageId > 388) {
-        console.error('Invalid package ID:', size);
+
+    if (mapped === 0) {
+        console.warn('[UP04] No massage insole packages matched in campaign');
+    } else {
+        console.log(`[UP04] Built upsell map: ${mapped} package(s) →`, UP04_PACKAGE_MAP);
+        console.log('[UP04] Campaign product data:', UP04_CAMPAIGN_DATA);
+    }
+
+    // Apply live campaign data to pricing config and DOM
+    if (UP04_CAMPAIGN_DATA.offerPrice  !== null) UP04_PRICING.offerPrice  = UP04_CAMPAIGN_DATA.offerPrice;
+    if (UP04_CAMPAIGN_DATA.retailPrice !== null) UP04_PRICING.retailPrice = UP04_CAMPAIGN_DATA.retailPrice;
+    updateProductDataFromCampaign();
+}
+
+// Called when SDK fires 'next:initialized'
+window.addEventListener('next:initialized', () => {
+    buildUpsellPackageMap();
+});
+
+function calculatePackageId(color, size) {
+    const key = `${color}-${size}`;
+    const packageId = UP04_PACKAGE_MAP[key];
+
+    if (!packageId) {
+        console.error('[UP04] Combination not found in package map:', key, '| Available:', Object.keys(UP04_PACKAGE_MAP));
         return null;
     }
-    
+
+    console.log('[UP04] Package ID resolved:', { color, size, key, packageId });
     return packageId;
 }
 
@@ -56,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Pricing Configuration
 const UP04_PRICING = {
     retailPrice: 39.99,
-    offerPrice: 19.99
+    offerPrice: 9.99
 };
 
 // Update displayed prices based on quantity
@@ -161,38 +264,40 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('next:initialized', function() {
     console.log('Next SDK initialized on upsell page');
     
-    const sizeSelect = document.getElementById('upsell-size');
-    const addButton = document.getElementById('upsell-add-button');
-    const skipButton = document.getElementById('upsell-skip-button');
-    const acceptUrl = document.querySelector('meta[name="next-upsell-accept-url"]')?.content || '/lorax-pairs/u/up05';
-    const declineUrl = document.querySelector('meta[name="next-upsell-decline-url"]')?.content || '/lorax-pairs/u/up05';
-    
+    const colorSelect = document.getElementById('upsell-color');
+    const sizeSelect  = document.getElementById('upsell-size');
+    const addButton   = document.getElementById('upsell-add-button');
+    const skipButton  = document.getElementById('upsell-skip-button');
+    const acceptUrl   = document.querySelector('meta[name="next-upsell-accept-url"]')?.content || '/lorax-pairs/u/up05';
+    const declineUrl  = document.querySelector('meta[name="next-upsell-decline-url"]')?.content || '/lorax-pairs/u/up05';
+
     // Handle add to order button using next.addUpsell() SDK method
     if (addButton) {
         addButton.addEventListener('click', async function(e) {
             e.preventDefault();
-            
+
             console.log('🔘 Add to order button clicked');
-            
-            if (!sizeSelect) {
-                alert('Please select a size before adding to order');
+
+            if (!colorSelect || !sizeSelect) {
+                alert('Please select a color and size before adding to order');
                 return;
             }
-            
-            const size = sizeSelect.value;
-            const packageId = calculatePackageId(size);
-            
+
+            const color = colorSelect.value;
+            const size  = sizeSelect.value;
+            const packageId = calculatePackageId(color, size);
+
             // Get selected quantity
             const selectedQuantityToggle = document.querySelector('[data-next-upsell-quantity-toggle].next-selected');
             const quantity = selectedQuantityToggle ? parseInt(selectedQuantityToggle.getAttribute('data-next-upsell-quantity-toggle')) : 1;
-            
+
             if (!packageId) {
                 alert('Unable to process your selection. Please try again.');
-                console.error('❌ Invalid package ID for:', { size });
+                console.error('❌ Invalid package ID for:', { color, size });
                 return;
             }
-            
-            console.log('📦 Adding upsell package:', packageId, 'for size:', size, 'quantity:', quantity);
+
+            console.log('📦 Adding upsell package:', packageId, 'for color:', color, 'size:', size, 'quantity:', quantity);
             
             // Show loading state
             addButton.classList.add('is-submitting', 'next-loading');
@@ -214,11 +319,11 @@ window.addEventListener('next:initialized', function() {
                     window.UnifiedTrackingBridge.track.upsellAccepted({
                         packageId: packageId,
                         quantity: quantity,
-                        productName: `Premium Insoles - ${sizeLabel}`,
-                        price: 19.99 * quantity,
-                        image: 'https://cdn.29next.store/media/peakfootwear/uploads/premium-insoles-1.webp',
+                        productName: UP04_CAMPAIGN_DATA.productName || `Massage Insole - Nextcommerce - ${color} - ${size}`,
+                        price: UP04_CAMPAIGN_DATA.offerPrice ?? UP04_PRICING.offerPrice,
+                        image: 'https://cdn.29next.store/media/peakfootwear/uploads/594A0954_1_bb0429ae-1357-4dfa-bb73-6bdcd4d22ce9.jpg',
                         brand: 'Peak Footwear',
-                        sku: `premium-insoles-${packageId}`
+                        sku: `massage-insole-${color}-${size}`
                     });
                 }
                 
@@ -257,20 +362,23 @@ window.addEventListener('next:initialized', function() {
 window.addEventListener('load', function() {
     // Fire view content event for upsell page
     if (window.NextDataLayer) {
+        const _offerPrice  = UP04_CAMPAIGN_DATA.offerPrice  ?? UP04_PRICING.offerPrice;
+        const _retailPrice = UP04_CAMPAIGN_DATA.retailPrice ?? UP04_PRICING.retailPrice;
+        const _productName = UP04_CAMPAIGN_DATA.productName || 'Massage Insole - Nextcommerce';
         window.NextDataLayer.push({
             event: 'dl_view_item',
             ecommerce: {
                 currency: 'USD',
-                value: 19.99,
+                value: _offerPrice,
                 items: [{
-                    item_id: 'premium-insoles-upsell',
-                    item_name: 'Premium Insoles - Upsell Offer (50% Off)',
+                    item_id: 'massage-insole-nextcommerce-upsell',
+                    item_name: `${_productName} - Upsell Offer`,
                     item_category: 'accessories',
                     item_brand: 'Peak Footwear',
-                    price: 19.99,
+                    price: _offerPrice,
                     quantity: 1,
-                    item_sku: 'PREMIUM-INSOLES-UPSELL',
-                    discount: 20.00
+                    item_sku: 'MASSAGE-INSOLE-UPSELL',
+                    discount: parseFloat((_retailPrice - _offerPrice).toFixed(2))
                 }]
             }
         });
@@ -304,4 +412,4 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Accessibility enhancements applied');
 });
 
-console.log('Peak Footwear Upsell Page 4 (Premium Insoles - Pairs Campaign) JavaScript with Next SDK integration loaded successfully');
+console.log('Peak Footwear Upsell Page 4 (Massage Insole - Nextcommerce, product 13045) JavaScript loaded successfully');

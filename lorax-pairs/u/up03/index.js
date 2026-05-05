@@ -1,73 +1,143 @@
-// Next SDK Integration - Upsell Page (Peak Compression Socks)
+// Next SDK Integration - Upsell Page (Compression Socks - Nextcommerce)
+// Product ID: 13073
 
-// Package ID Calculator for Peak Compression Socks
-function calculatePackageId(style, color, size, quantity) {
-    // Detect campaign type from referrer
-    const referrer = document.referrer;
-    const isBogoCampaign = referrer.includes('/co02-bogo') || 
-                            referrer.includes('/of02-bogo') ||
-                            referrer.includes('/co03');
-    
-    // Base package ID for each campaign (for quantity 1)
-    const baseId = isBogoCampaign ? 189 : 280;
-    
-    console.log('Package ID calculation debug:', {
-        style: style,
-        color: color,
-        size: size,
-        quantity: quantity,
-        isBogoCampaign: isBogoCampaign,
-        baseId: baseId
+// ============================================
+// DYNAMIC UPSELL PACKAGE MAP
+// Built at runtime from window.next.getCampaignData() offers/packages
+// so it always uses the correct campaign ref_id automatically.
+// Key format: "${style}-${color}-${size}"  e.g. "long-black-s-m"
+// ============================================
+
+const UP03_PACKAGE_MAP = {};
+
+// Live product data from campaign — overrides hardcoded defaults when SDK loads
+const UP03_CAMPAIGN_DATA = {
+    productName: null,
+    retailPrice: null,
+    offerPrice:  null,
+};
+
+// Display name → slug mappings (must match words in campaign package names)
+const UP03_STYLE_MAP  = { 'long': 'long', 'short': 'short' };
+const UP03_COLOR_MAP  = { 'black': 'black', 'white': 'white', 'pink': 'pink', 'orange': 'orange' };
+const UP03_SIZE_MAP   = {
+    's-m': 's-m', 'l-xl': 'l-xl', '2xl-3xl': '2xl-3xl',  // long sock sizes
+    's/m': 's/m', 'l/xl': 'l/xl'                           // short sock sizes
+};
+
+/**
+ * Updates the page DOM with live product data fetched from the campaign SDK.
+ * Called after buildUpsellPackageMap() succeeds.
+ */
+function updateProductDataFromCampaign() {
+    if (UP03_CAMPAIGN_DATA.productName) {
+        const titleEls = document.querySelectorAll('[data-up03-product-name]');
+        titleEls.forEach(el => { el.textContent = UP03_CAMPAIGN_DATA.productName; });
+        console.log('[UP03] Product name updated from campaign:', UP03_CAMPAIGN_DATA.productName);
+    }
+
+    const selectedToggle = document.querySelector('[data-next-upsell-quantity-toggle].next-selected');
+    const currentQty = selectedToggle ? parseInt(selectedToggle.getAttribute('data-next-upsell-quantity-toggle')) : 1;
+    updatePrices(currentQty);
+    console.log('[UP03] Prices refreshed from campaign data at qty:', currentQty);
+}
+
+// Long sock sizes use dashes (S-M, L-XL, 2XL-3XL); short sock sizes use slashes (S/M, L/XL)
+const UP03_LONG_SIZES  = new Set(['s-m', 'l-xl', '2xl-3xl']);
+const UP03_SHORT_SIZES = new Set(['s/m', 'l/xl']);
+
+/**
+ * Builds style+color+size → ref_id map from campaign offers/packages at runtime.
+ * Package names follow: "[Campaign Name] - [Color] / [Size]"
+ * e.g. "Compression Socks - Nextcommerce - Black / S-M"
+ * Style (long/short) is inferred from the size value.
+ */
+function buildUpsellPackageMap() {
+    const cd = window.next?.getCampaignData?.();
+    const allPackages = [...(cd?.packages || []), ...(cd?.offers || [])];
+
+    if (!allPackages.length) {
+        console.warn('[UP03] No packages/offers in campaign data');
+        return;
+    }
+
+    let mapped = 0;
+    allPackages.forEach(pkg => {
+        const name = (pkg.name || '').toLowerCase();
+        // Match compression sock packages
+        if (!name.includes('compression') && !name.includes('sock')) return;
+
+        // Package name format: "[Campaign] - [Color] / [Size]"
+        // Strip campaign prefix: everything after the last " - "
+        let variantPart = name;
+        const dashIdx = variantPart.lastIndexOf(' - ');
+        if (dashIdx !== -1) variantPart = variantPart.substring(dashIdx + 3);
+
+        // Split remaining part by " / " → [color, size]
+        const parts = variantPart.split(' / ').map(p => p.trim());
+        if (parts.length < 2) {
+            console.warn('[UP03] Unexpected package name format (need Color / Size):', pkg.name);
+            return;
+        }
+
+        const [colorPart, sizePart] = parts;
+        const colorSlug = UP03_COLOR_MAP[colorPart];
+        const sizeSlug  = UP03_SIZE_MAP[sizePart];
+
+        // Infer style from size: long sock sizes use dashes, short use slashes
+        let styleSlug = null;
+        if (UP03_LONG_SIZES.has(sizePart))       styleSlug = 'long';
+        else if (UP03_SHORT_SIZES.has(sizePart)) styleSlug = 'short';
+
+        if (!colorSlug || !sizeSlug || !styleSlug) {
+            console.warn('[UP03] Unrecognised color/size in package:', pkg.name, { colorPart, sizePart });
+            return;
+        }
+
+        const key = `${styleSlug}-${colorSlug}-${sizeSlug}`;
+        UP03_PACKAGE_MAP[key] = pkg.ref_id;
+
+        // Capture pricing + product name from the first matched package
+        if (UP03_CAMPAIGN_DATA.offerPrice === null) {
+            if (pkg.price_total  != null) UP03_CAMPAIGN_DATA.offerPrice  = parseFloat(pkg.price_total);
+            if (pkg.price_retail != null) UP03_CAMPAIGN_DATA.retailPrice = parseFloat(pkg.price_retail);
+            if (pkg.product_name)         UP03_CAMPAIGN_DATA.productName = pkg.product_name;
+            else if (pkg.name)            UP03_CAMPAIGN_DATA.productName = pkg.name.split(' - ')[0].trim();
+        }
+
+        mapped++;
     });
-    
-    let packageId = baseId;
-    
-    if (style === 'long') {
-        // Long socks: 6 variants (2 colors × 3 sizes)
-        // Black: 0-2, White: 3-5
-        const longColors = ['black', 'white'];
-        const longSizes = ['S-M', 'L-XL', '2XL-3XL'];
-        
-        const colorIndex = longColors.indexOf(color);
-        const sizeIndex = longSizes.indexOf(size);
-        
-        if (colorIndex === -1 || sizeIndex === -1) {
-            console.error('Invalid long sock combination:', { color, size });
-            return null;
-        }
-        
-        // Calculate offset: color * 3 + size
-        packageId = baseId + (colorIndex * 3) + sizeIndex;
-        
-    } else if (style === 'short') {
-        // Short socks: 8 variants (4 colors × 2 sizes)
-        // Start at offset 6 (after long socks)
-        // Black: 0-1, White: 2-3, Pink: 4-5, Orange: 6-7
-        const shortColors = ['black', 'white', 'pink', 'orange'];
-        const shortSizes = ['S/M', 'L/XL'];
-        
-        const colorIndex = shortColors.indexOf(color);
-        const sizeIndex = shortSizes.indexOf(size);
-        
-        if (colorIndex === -1 || sizeIndex === -1) {
-            console.error('Invalid short sock combination:', { color, size });
-            return null;
-        }
-        
-        // Calculate offset: 6 (long socks) + color * 2 + size
-        packageId = baseId + 6 + (colorIndex * 2) + sizeIndex;
-        
+
+    if (mapped === 0) {
+        console.warn('[UP03] No compression sock packages matched in campaign');
     } else {
-        console.error('Invalid style:', style);
+        console.log(`[UP03] Built upsell map: ${mapped} package(s) →`, UP03_PACKAGE_MAP);
+        console.log('[UP03] Campaign product data:', UP03_CAMPAIGN_DATA);
+    }
+
+    // Apply live campaign data to pricing config and DOM
+    if (UP03_CAMPAIGN_DATA.offerPrice  !== null) UP03_PRICING.offerPrice  = UP03_CAMPAIGN_DATA.offerPrice;
+    if (UP03_CAMPAIGN_DATA.retailPrice !== null) UP03_PRICING.retailPrice = UP03_CAMPAIGN_DATA.retailPrice;
+    updateProductDataFromCampaign();
+}
+
+// Called when SDK fires 'next:initialized'
+window.addEventListener('next:initialized', () => {
+    buildUpsellPackageMap();
+});
+
+function calculatePackageId(style, color, size) {
+    // Normalise size to lowercase slug used as map key
+    const sizeSlug = size.toLowerCase();
+    const key = `${style}-${color}-${sizeSlug}`;
+    const packageId = UP03_PACKAGE_MAP[key];
+
+    if (!packageId) {
+        console.error('[UP03] Combination not found in package map:', key, '| Available:', Object.keys(UP03_PACKAGE_MAP));
         return null;
     }
-    
-    console.log('Package ID calculation result:', {
-        baseId: baseId,
-        style: style,
-        finalPackageId: packageId
-    });
-    
+
+    console.log('[UP03] Package ID resolved:', { style, color, size, key, packageId });
     return packageId;
 }
 
@@ -225,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Pricing Configuration
 const UP03_PRICING = {
     retailPrice: 29.99,
-    offerPrice: 20.99
+    offerPrice: 9.99
 };
 
 // Update displayed prices based on quantity
@@ -385,9 +455,9 @@ window.addEventListener('next:initialized', function() {
                     window.UnifiedTrackingBridge.track.upsellAccepted({
                         packageId: packageId,
                         quantity: quantity,
-                        productName: `Peak Compression Socks - ${style} - ${color} - ${size}`,
-                        price: 20.99,
-                        image: document.getElementById('main-product-image')?.src || 'https://cdn.29next.store/media/peakfootwear/uploads/compression-sock-long-black.webp',
+                        productName: UP03_CAMPAIGN_DATA.productName || `Compression Socks - Nextcommerce - ${style} - ${color} - ${size}`,
+                        price: UP03_CAMPAIGN_DATA.offerPrice ?? UP03_PRICING.offerPrice,
+                        image: document.getElementById('main-product-image')?.src || 'https://cdn.29next.store/media/peakfootwear/uploads/55_02468975-8f80-4990-802e-843c8e4d2165.jpg',
                         brand: 'Peak Footwear',
                         sku: `compression-sock-${style}-${color}-${size}`
                     });
@@ -428,20 +498,23 @@ window.addEventListener('next:initialized', function() {
 window.addEventListener('load', function() {
     // Fire view content event for upsell page
     if (window.NextDataLayer) {
+        const _offerPrice  = UP03_CAMPAIGN_DATA.offerPrice  ?? UP03_PRICING.offerPrice;
+        const _retailPrice = UP03_CAMPAIGN_DATA.retailPrice ?? UP03_PRICING.retailPrice;
+        const _productName = UP03_CAMPAIGN_DATA.productName || 'Compression Socks - Nextcommerce';
         window.NextDataLayer.push({
             event: 'dl_view_item',
             ecommerce: {
                 currency: 'USD',
-                value: 20.99,
+                value: _offerPrice,
                 items: [{
-                    item_id: 'compression-socks-upsell',
-                    item_name: 'Peak Compression Socks - Upsell Offer (30% Off)',
+                    item_id: 'compression-socks-nextcommerce-upsell',
+                    item_name: `${_productName} - Upsell Offer`,
                     item_category: 'athletic-wear',
                     item_brand: 'Peak Footwear',
-                    price: 20.99,
+                    price: _offerPrice,
                     quantity: 1,
                     item_sku: 'COMPRESSION-SOCK-UPSELL',
-                    discount: 9.00
+                    discount: parseFloat((_retailPrice - _offerPrice).toFixed(2))
                 }]
             }
         });
@@ -475,5 +548,5 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Accessibility enhancements applied');
 });
 
-console.log('Peak Footwear Upsell Page 3 (Compression Socks) JavaScript with Next SDK integration loaded successfully');
+console.log('Peak Footwear Upsell Page 3 (Compression Socks - Nextcommerce, product 13073) JavaScript loaded successfully');
 

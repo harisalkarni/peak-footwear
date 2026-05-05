@@ -1,7 +1,121 @@
-// Next SDK Integration - Upsell Page (Bunion Corrector & Big Toe Straightener - Pairs Campaign)
+// Next SDK Integration - Upsell Page (Knee Brace - Nextcommerce)
+// Product ID: 13080 | Default variant ID: 13081
 
-// Package ID for Bunion Corrector - Single SKU
-const BUNION_CORRECTOR_PACKAGE_ID = 389;
+// ============================================
+// DYNAMIC UPSELL PACKAGE MAP
+// Built at runtime from window.next.getCampaignData() offers/packages
+// so it always uses the correct campaign ref_id automatically.
+// ============================================
+
+const UP05_PACKAGE_MAP = {};
+
+// Live product data from campaign — overrides hardcoded defaults when SDK loads
+const UP05_CAMPAIGN_DATA = {
+    productName: null,
+    retailPrice: null,
+    offerPrice:  null,
+};
+
+// Size display name (lowercase, as in campaign package) → slug used in HTML select value
+// Add/remove sizes here to match whatever variants exist in your campaign
+const UP05_SIZE_MAP = {
+    's':    's',
+    'm':    'm',
+    'l':    'l',
+    'xl':   'xl',
+    'xxl':  'xxl',
+    's/m':  's-m',
+    'l/xl': 'l-xl',
+};
+
+/**
+ * Updates the page DOM with live product data from the campaign SDK.
+ */
+function updateProductDataFromCampaign() {
+    if (UP05_CAMPAIGN_DATA.productName) {
+        const titleEls = document.querySelectorAll('[data-up05-product-name]');
+        titleEls.forEach(el => { el.textContent = UP05_CAMPAIGN_DATA.productName; });
+        console.log('[UP05] Product name updated from campaign:', UP05_CAMPAIGN_DATA.productName);
+    }
+
+    const selectedToggle = document.querySelector('[data-next-upsell-quantity-toggle].next-selected');
+    const currentQty = selectedToggle ? parseInt(selectedToggle.getAttribute('data-next-upsell-quantity-toggle')) : 1;
+    updatePrices(currentQty);
+    console.log('[UP05] Prices refreshed from campaign data at qty:', currentQty);
+}
+
+/**
+ * Builds size → ref_id map from campaign offers/packages at runtime.
+ * Package names follow: "[Campaign Name] - [Size]"
+ * e.g. "Knee Brace - Nextcommerce - M"
+ * If it's a single SKU (no size), the whole product maps to one ref_id under key "default".
+ */
+function buildUpsellPackageMap() {
+    const cd = window.next?.getCampaignData?.();
+    const allPackages = [...(cd?.packages || []), ...(cd?.offers || [])];
+
+    if (!allPackages.length) {
+        console.warn('[UP05] No packages/offers in campaign data');
+        return;
+    }
+
+    let mapped = 0;
+    allPackages.forEach(pkg => {
+        const name = (pkg.name || '').toLowerCase();
+        // Match knee brace packages
+        if (!name.includes('knee') && !name.includes('brace')) return;
+
+        // Package name format: "[Campaign] - [Size]"
+        // Strip campaign prefix: everything after the last " - "
+        let variantPart = name;
+        const dashIdx = variantPart.lastIndexOf(' - ');
+        if (dashIdx !== -1) variantPart = variantPart.substring(dashIdx + 3).trim();
+
+        // Try to match a known size slug
+        const sizeSlug = UP05_SIZE_MAP[variantPart] || variantPart.replace(/\//g, '-');
+
+        UP05_PACKAGE_MAP[sizeSlug] = pkg.ref_id;
+
+        // Capture pricing + product name from the first matched package
+        if (UP05_CAMPAIGN_DATA.offerPrice === null) {
+            if (pkg.price_total  != null) UP05_CAMPAIGN_DATA.offerPrice  = parseFloat(pkg.price_total);
+            if (pkg.price_retail != null) UP05_CAMPAIGN_DATA.retailPrice = parseFloat(pkg.price_retail);
+            if (pkg.product_name)         UP05_CAMPAIGN_DATA.productName = pkg.product_name;
+            else if (pkg.name)            UP05_CAMPAIGN_DATA.productName = pkg.name.split(' - ')[0].trim();
+        }
+
+        mapped++;
+    });
+
+    if (mapped === 0) {
+        console.warn('[UP05] No knee brace packages matched in campaign');
+    } else {
+        console.log(`[UP05] Built upsell map: ${mapped} package(s) →`, UP05_PACKAGE_MAP);
+        console.log('[UP05] Campaign product data:', UP05_CAMPAIGN_DATA);
+    }
+
+    // Apply live campaign data to pricing config and DOM
+    if (UP05_CAMPAIGN_DATA.offerPrice  !== null) UP05_PRICING.offerPrice  = UP05_CAMPAIGN_DATA.offerPrice;
+    if (UP05_CAMPAIGN_DATA.retailPrice !== null) UP05_PRICING.retailPrice = UP05_CAMPAIGN_DATA.retailPrice;
+    updateProductDataFromCampaign();
+}
+
+// Called when SDK fires 'next:initialized'
+window.addEventListener('next:initialized', () => {
+    buildUpsellPackageMap();
+});
+
+function calculatePackageId(size) {
+    const packageId = UP05_PACKAGE_MAP[size];
+
+    if (!packageId) {
+        console.error('[UP05] Size not found in package map:', size, '| Available:', Object.keys(UP05_PACKAGE_MAP));
+        return null;
+    }
+
+    console.log('[UP05] Package ID resolved:', { size, packageId });
+    return packageId;
+}
 
 // Swiper/Slider Initialization
 document.addEventListener('DOMContentLoaded', function() {
@@ -36,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Pricing Configuration
 const UP05_PRICING = {
     retailPrice: 24.99,
-    offerPrice: 14.99
+    offerPrice: 9.99
 };
 
 // Update displayed prices based on quantity
@@ -141,46 +255,57 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('next:initialized', function() {
     console.log('Next SDK initialized on upsell page');
     
-    const addButton = document.getElementById('upsell-add-button');
+    const sizeSelect = document.getElementById('upsell-size');
+    const addButton  = document.getElementById('upsell-add-button');
     const skipButton = document.getElementById('upsell-skip-button');
-    const acceptUrl = document.querySelector('meta[name="next-upsell-accept-url"]')?.content || '/lorax-pairs/thank-you';
+    const acceptUrl  = document.querySelector('meta[name="next-upsell-accept-url"]')?.content || '/lorax-pairs/thank-you';
     const declineUrl = document.querySelector('meta[name="next-upsell-decline-url"]')?.content || '/lorax-pairs/thank-you';
-    
+
     // Handle add to order button using next.addUpsell() SDK method
     if (addButton) {
         addButton.addEventListener('click', async function(e) {
             e.preventDefault();
-            
+
             console.log('🔘 Add to order button clicked');
-            
+
+            // Get size — falls back to 'default' if there's no size selector (single-SKU)
+            const size = sizeSelect ? sizeSelect.value : 'default';
+            const packageId = calculatePackageId(size);
+
             // Get selected quantity
             const selectedQuantityToggle = document.querySelector('[data-next-upsell-quantity-toggle].next-selected');
             const quantity = selectedQuantityToggle ? parseInt(selectedQuantityToggle.getAttribute('data-next-upsell-quantity-toggle')) : 1;
-            
-            console.log('📦 Adding upsell package:', BUNION_CORRECTOR_PACKAGE_ID, 'quantity:', quantity);
-            
+
+            if (!packageId) {
+                alert('Unable to process your selection. Please try again.');
+                console.error('❌ Invalid package ID for:', { size });
+                return;
+            }
+
+            console.log('📦 Adding upsell package:', packageId, 'for size:', size, 'quantity:', quantity);
+
             // Show loading state
             addButton.classList.add('is-submitting', 'next-loading');
-            
+
             try {
                 // Use Next SDK's addUpsell method
-                const result = await next.addUpsell({ 
-                    packageId: BUNION_CORRECTOR_PACKAGE_ID,
+                const result = await next.addUpsell({
+                    packageId: packageId,
                     quantity: quantity
                 });
-                
+
                 console.log('✅ Upsell added successfully:', result);
-                
+
                 // Fire tracking event
                 if (window.UnifiedTrackingBridge && window.UnifiedTrackingBridge.track) {
                     window.UnifiedTrackingBridge.track.upsellAccepted({
-                        packageId: BUNION_CORRECTOR_PACKAGE_ID,
+                        packageId: packageId,
                         quantity: quantity,
-                        productName: 'Bunion Corrector & Big Toe Straightener',
-                        price: 14.99,
+                        productName: UP05_CAMPAIGN_DATA.productName || 'Knee Brace - Nextcommerce',
+                        price: UP05_CAMPAIGN_DATA.offerPrice ?? UP05_PRICING.offerPrice,
                         image: 'https://cdn.29next.store/media/peakfootwear/uploads/bunion-corrector-1.webp',
                         brand: 'Peak Footwear',
-                        sku: 'bunion-corrector-389'
+                        sku: `knee-brace-${size}`
                     });
                 }
                 
@@ -219,20 +344,23 @@ window.addEventListener('next:initialized', function() {
 window.addEventListener('load', function() {
     // Fire view content event for upsell page
     if (window.NextDataLayer) {
+        const _offerPrice  = UP05_CAMPAIGN_DATA.offerPrice  ?? UP05_PRICING.offerPrice;
+        const _retailPrice = UP05_CAMPAIGN_DATA.retailPrice ?? UP05_PRICING.retailPrice;
+        const _productName = UP05_CAMPAIGN_DATA.productName || 'Knee Brace - Nextcommerce';
         window.NextDataLayer.push({
             event: 'dl_view_item',
             ecommerce: {
                 currency: 'USD',
-                value: 14.99,
+                value: _offerPrice,
                 items: [{
-                    item_id: 'bunion-corrector-upsell',
-                    item_name: 'Bunion Corrector & Big Toe Straightener - Upsell Offer (40% Off)',
-                    item_category: 'foot-care',
+                    item_id: 'knee-brace-nextcommerce-upsell',
+                    item_name: `${_productName} - Upsell Offer`,
+                    item_category: 'support',
                     item_brand: 'Peak Footwear',
-                    price: 14.99,
+                    price: _offerPrice,
                     quantity: 1,
-                    item_sku: 'BUNION-CORRECTOR-389',
-                    discount: 10.00
+                    item_sku: 'KNEE-BRACE-UPSELL',
+                    discount: parseFloat((_retailPrice - _offerPrice).toFixed(2))
                 }]
             }
         });
@@ -266,4 +394,4 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Accessibility enhancements applied');
 });
 
-console.log('Peak Footwear Upsell Page 5 (Bunion Corrector - Pairs Campaign) JavaScript with Next SDK integration loaded successfully');
+console.log('Peak Footwear Upsell Page 5 (Knee Brace - Nextcommerce, product 13080) JavaScript loaded successfully');

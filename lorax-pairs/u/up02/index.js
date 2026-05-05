@@ -1,44 +1,131 @@
-// Next SDK Integration - Upsell Page (Gel Toe Separator)
+// Next SDK Integration - Upsell Page (Toe Separator - Nextcommerce)
+// Product ID: 13038 | White variant ID: 13041
 
-// Package ID Calculator for Gel Toe Separator
-function calculatePackageId(color, quantity) {
-    // Detect campaign type from referrer
-    const referrer = document.referrer;
-    const isBogoCampaign = referrer.includes('/co02-bogo') || 
-                            referrer.includes('/of02-bogo') ||
-                            referrer.includes('/co03');
-    
-    // Color order and base IDs
-    const colors = ['pink', 'blue', 'white', 'black', 'beige', 'orange'];
-    
-    // Base package ID for each campaign (for quantity 1)
-    const baseId = isBogoCampaign ? 183 : 274;
-    
-    const colorIndex = colors.indexOf(color);
-    
-    console.log('Package ID calculation debug:', {
-        color: color,
-        quantity: quantity,
-        colorIndex: colorIndex,
-        isBogoCampaign: isBogoCampaign,
-        baseId: baseId
+// ============================================
+// DYNAMIC UPSELL PACKAGE MAP
+// Built at runtime from window.next.getCampaignData() offers/packages
+// so it always uses the correct campaign ref_id automatically.
+// ============================================
+
+// Maps color slug → campaign package ref_id (populated on next:initialized)
+const UP02_PACKAGE_MAP = {};
+
+// Live product data from campaign — overrides hardcoded defaults when SDK loads
+const UP02_CAMPAIGN_DATA = {
+    productName: null,  // e.g. "Toe Separator - Nextcommerce"
+    retailPrice: null,  // from pkg.price_retail
+    offerPrice:  null,  // from pkg.price_total (the discounted price customer pays)
+};
+
+// Color display name (as it appears in campaign package names) → slug used in HTML
+const UP02_COLOR_DISPLAY_TO_SLUG = {
+    'white':  'white',
+    'pink':   'pink',
+    'blue':   'blue',
+    'black':  'black',
+    'beige':  'beige',
+    'orange': 'orange',
+    'purple': 'purple',
+    'green':  'green',
+};
+
+/**
+ * Updates the page DOM with live product data fetched from the campaign SDK.
+ * Called after buildUpsellPackageMap() succeeds.
+ * Falls back gracefully — if a value is null, the hardcoded HTML stays in place.
+ */
+function updateProductDataFromCampaign() {
+    // --- Product title ---
+    if (UP02_CAMPAIGN_DATA.productName) {
+        const titleEls = document.querySelectorAll('[data-up02-product-name]');
+        titleEls.forEach(el => { el.textContent = UP02_CAMPAIGN_DATA.productName; });
+        console.log('[UP02] Product name updated from campaign:', UP02_CAMPAIGN_DATA.productName);
+    }
+
+    // --- Prices (qty=1 is the default on page load) ---
+    // Re-use updatePrices() so the same logic applies — it reads UP02_PRICING which was
+    // already overwritten above before this function is called.
+    const selectedToggle = document.querySelector('[data-next-upsell-quantity-toggle].next-selected');
+    const currentQty = selectedToggle ? parseInt(selectedToggle.getAttribute('data-next-upsell-quantity-toggle')) : 1;
+    updatePrices(currentQty);
+    console.log('[UP02] Prices refreshed from campaign data at qty:', currentQty);
+}
+
+/**
+ * Builds color → ref_id map from campaign offers/packages at runtime.
+ * Package names follow: "[Campaign Name] - [Color] / [Size]"  OR  "[Campaign Name] - [Color]"
+ * Toe separator upsell packages are typically: "Toe Separator - White"
+ */
+function buildUpsellPackageMap() {
+    const cd = window.next?.getCampaignData?.();
+    const allPackages = [...(cd?.packages || []), ...(cd?.offers || [])];
+
+    if (!allPackages.length) {
+        console.warn('[UP02] No packages/offers in campaign — using fallback product variant ID 13041 for white');
+        UP02_PACKAGE_MAP['white'] = 13041; // fallback: product variant ID
+        return;
+    }
+
+    let mapped = 0;
+    allPackages.forEach(pkg => {
+        const name = (pkg.name || '').toLowerCase();
+        // Match toe separator packages for this upsell
+        if (!name.includes('toe') && !name.includes('separator')) return;
+
+        // Extract color from name: look after last " - " or "/"
+        let colorPart = name;
+        const slashIdx = colorPart.lastIndexOf(' / ');
+        if (slashIdx !== -1) colorPart = colorPart.substring(slashIdx + 3);
+        else {
+            const dashIdx = colorPart.lastIndexOf(' - ');
+            if (dashIdx !== -1) colorPart = colorPart.substring(dashIdx + 3);
+        }
+        colorPart = colorPart.trim();
+
+        const colorSlug = UP02_COLOR_DISPLAY_TO_SLUG[colorPart];
+        if (colorSlug) {
+            UP02_PACKAGE_MAP[colorSlug] = pkg.ref_id;
+
+            // Capture pricing + product name from the first matched package (all colors share same prices)
+            if (UP02_CAMPAIGN_DATA.offerPrice === null) {
+                if (pkg.price_total  != null) UP02_CAMPAIGN_DATA.offerPrice  = parseFloat(pkg.price_total);
+                if (pkg.price_retail != null) UP02_CAMPAIGN_DATA.retailPrice = parseFloat(pkg.price_retail);
+                if (pkg.product_name)         UP02_CAMPAIGN_DATA.productName = pkg.product_name;
+                else if (pkg.name)            UP02_CAMPAIGN_DATA.productName = pkg.name.split(' - ')[0].trim();
+            }
+
+            mapped++;
+        }
     });
-    
-    if (colorIndex === -1) {
-        console.error('Color not found:', color);
+
+    if (mapped === 0) {
+        console.warn('[UP02] No toe separator packages matched — using fallback product variant ID 13041 for white');
+        UP02_PACKAGE_MAP['white'] = 13041;
+    } else {
+        console.log(`[UP02] Built upsell map: ${mapped} package(s) →`, UP02_PACKAGE_MAP);
+        console.log('[UP02] Campaign product data:', UP02_CAMPAIGN_DATA);
+    }
+
+    // Apply live campaign data to pricing config and DOM
+    if (UP02_CAMPAIGN_DATA.offerPrice  !== null) UP02_PRICING.offerPrice  = UP02_CAMPAIGN_DATA.offerPrice;
+    if (UP02_CAMPAIGN_DATA.retailPrice !== null) UP02_PRICING.retailPrice = UP02_CAMPAIGN_DATA.retailPrice;
+    updateProductDataFromCampaign();
+}
+
+// Called when SDK fires 'next:initialized'
+window.addEventListener('next:initialized', () => {
+    buildUpsellPackageMap();
+});
+
+function calculatePackageId(color, quantity) {
+    const packageId = UP02_PACKAGE_MAP[color];
+
+    if (!packageId) {
+        console.error('[UP02] Color not found in package map:', color, '| Available:', Object.keys(UP02_PACKAGE_MAP));
         return null;
     }
-    
-    // Calculate package ID: base + color offset
-    // Quantity doesn't affect ID for this product (each color is a separate package)
-    const packageId = baseId + colorIndex;
-    
-    console.log('Package ID calculation result:', {
-        baseId: baseId,
-        colorIndex: colorIndex,
-        finalPackageId: packageId
-    });
-    
+
+    console.log('[UP02] Package ID resolved:', { color, quantity, packageId });
     return packageId;
 }
 
@@ -75,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Pricing Configuration
 const UP02_PRICING = {
     retailPrice: 19.99,
-    offerPrice: 14.99
+    offerPrice: 7.99
 };
 
 // Update displayed prices based on quantity
@@ -231,11 +318,11 @@ window.addEventListener('next:initialized', function() {
                     window.UnifiedTrackingBridge.track.upsellAccepted({
                         packageId: packageId,
                         quantity: quantity,
-                        productName: `Gel Toe Separator - ${color}`,
-                        price: 14.99,
+                        productName: UP02_CAMPAIGN_DATA.productName || `Toe Separator - Nextcommerce - ${color}`,
+                        price: UP02_CAMPAIGN_DATA.offerPrice ?? UP02_PRICING.offerPrice,
                         image: 'https://cdn.29next.store/media/peakfootwear/uploads/2_fca4b915-c4e6-4521-ad2d-2f02e545b508.jpg',
                         brand: 'Peak Footwear',
-                        sku: `gel-toe-separator-${color}`
+                        sku: `toe-separator-${color}`
                     });
                 }
                 
@@ -274,20 +361,23 @@ window.addEventListener('next:initialized', function() {
 window.addEventListener('load', function() {
     // Fire view content event for upsell page
     if (window.NextDataLayer) {
+        const _offerPrice  = UP02_CAMPAIGN_DATA.offerPrice  ?? UP02_PRICING.offerPrice;
+        const _retailPrice = UP02_CAMPAIGN_DATA.retailPrice ?? UP02_PRICING.retailPrice;
+        const _productName = UP02_CAMPAIGN_DATA.productName || 'Toe Separator - Nextcommerce';
         window.NextDataLayer.push({
             event: 'dl_view_item',
             ecommerce: {
                 currency: 'USD',
-                value: 14.99,
+                value: _offerPrice,
                 items: [{
-                    item_id: 'gel-toe-separator-upsell',
-                    item_name: 'Gel Toe Separator - Upsell Offer (25% Off)',
+                    item_id: 'toe-separator-nextcommerce-upsell',
+                    item_name: `${_productName} - Upsell Offer`,
                     item_category: 'wellness',
                     item_brand: 'Peak Footwear',
-                    price: 14.99,
+                    price: _offerPrice,
                     quantity: 1,
                     item_sku: 'GEL-TOE-UPSELL',
-                    discount: 5.00
+                    discount: parseFloat((_retailPrice - _offerPrice).toFixed(2))
                 }]
             }
         });
@@ -321,5 +411,5 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Accessibility enhancements applied');
 });
 
-console.log('Peak Footwear Upsell Page 2 (Gel Toe Separator) JavaScript with Next SDK integration loaded successfully');
+console.log('Peak Footwear Upsell Page 2 (Toe Separator - Nextcommerce, product 13038) JavaScript loaded successfully');
 
