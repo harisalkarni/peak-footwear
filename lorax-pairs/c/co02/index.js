@@ -153,14 +153,14 @@ const CONFIG = {
   // Product Images by Color (Lorax Pro - Nextcommerce, product ID 12939)
   colors: {
     images: {
-      'white-pink': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages5_214a4d67-1698-4eef-ae62-978dcb5bd4d6.jpg',
-      'white-black': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/Image1_1.jpg',
-      'white-gray': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/Lorax_Gray.png',
-      'black': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages4_d436c985-a8cb-46e2-89cc-3e71606ad0bc.jpg',
-      'white-blue': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/0d4a4765-f654-4632-8e86-d8de02417cf7_2_2.jpg',
-      'blue': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages1_b55affef-da13-44f9-869a-9b41780aa691.jpg',
-      'orange': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages2_946af502-d31e-44bd-a6e8-a8007796b445.jpg',
-      'pink': 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages3_f7466438-5b73-4e74-88b4-603a4a06425c.jpg',
+      'white-pink': 'https://cdn.shopify.com/s/files/1/0644/6936/9018/files/12_dc171eb2-b2a4-4fc2-b83b-5529b65376d6.jpg?v=1778051620',
+      'white-black': 'https://cdn.shopify.com/s/files/1/0644/6936/9018/files/lorax-white-black-side-profile.jpg?v=1778051658',
+      'white-gray': 'https://cdn.shopify.com/s/files/1/0644/6936/9018/files/lorax-gray-side-profile.jpg?v=1778051658',
+      'black': 'https://cdn.shopify.com/s/files/1/0644/6936/9018/files/10_4bb3d955-f613-4682-b11a-685a3488f12a.jpg?v=1778051620',
+      'white-blue': 'https://cdn.shopify.com/s/files/1/0644/6936/9018/files/lorax-blue-side-profile.jpg?v=1778051658',
+      'blue': 'https://cdn.shopify.com/s/files/1/0644/6936/9018/files/14_d26db72d-07e3-4fa7-a2a3-58c2f052de3c.jpg?v=1778051621',
+      'orange': 'https://cdn.shopify.com/s/files/1/0644/6936/9018/files/13_041c4c21-a26b-4f09-af3a-7e671be03ccb.jpg?v=1778051621',
+      'pink': 'https://cdn.shopify.com/s/files/1/0644/6936/9018/files/11_c45e6bc0-f1fc-4700-a4e3-10b6db4cd68b.jpg?v=1778051620',
     },
     styles: {
       'white-pink': 'linear-gradient(135deg, #FFFFFF 50%, #FFB6C1 50%)',
@@ -223,7 +223,7 @@ const CONFIG = {
   // Exit Intent Configuration
   exitIntent: {
     enabled: false,
-    image: 'https://cdn.29next.store/media/peakfootwear/images/products/2026/05/PeakProductImages5_214a4d67-1698-4eef-ae62-978dcb5bd4d6.jpg',
+    image: 'https://cdn.shopify.com/s/files/1/0644/6936/9018/files/12_dc171eb2-b2a4-4fc2-b83b-5529b65376d6.jpg?v=1778051620',
     discountText: '🎉 Extra 10% OFF Applied!',
   },
 
@@ -325,8 +325,11 @@ class TierController {
     const sizes = window.next.getAvailableVariantAttributes(this.productId, 'size');
 
     // Use configured default color
+    // getAvailableVariantAttributes returns display names like "White & Pink" (with "&")
+    // CONFIG.defaults.color is a slug like "white-pink" (with "-"), so normalize before comparing
+    const normalizeColorName = str => str.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, '-');
     const defaultColor = colors.find(c =>
-      c.toLowerCase().includes(CONFIG.defaults.color.toLowerCase())
+      normalizeColorName(c) === CONFIG.defaults.color.toLowerCase()
     ) || colors[0];
 
     // Use configured default size if set

@@ -1644,10 +1644,9 @@ button:focus-visible,
 .cs2-color-trigger-img {
   width: 70px !important;
   height: 50px !important;
-  object-fit: contain !important;
+  object-fit: cover !important;
   flex-shrink: 0 !important;
   border-radius: 4px !important;
-  background: #f5f5f5 !important;
 }
 
 .cs2-color-trigger-name {
@@ -1719,7 +1718,6 @@ button:focus-visible,
   object-fit: contain !important;
   flex-shrink: 0 !important;
   border-radius: 4px !important;
-  background: #f5f5f5 !important;
 }
 
 .cs2-color-option span {
@@ -1749,7 +1747,7 @@ button:focus-visible,
   border: 1.5px solid #d0d0d0 !important;
   border-radius: 6px !important;
   background: #fafafa !important;
-  height: 44px !important;
+  height: 56px !important;
 }
 
 /* --- Shared select styles --- */
@@ -1933,6 +1931,10 @@ button:focus-visible,
   .cs2-header {
     padding: 12px 14px !important;
     border-radius: 6px 6px 0 0 !important;
+  }
+
+  .cs2-select--size {
+    line-height: 46px !important;
   }
 
   .cs2-header-num {

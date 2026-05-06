@@ -565,6 +565,10 @@ header nav ul {
 
 .hero-slider--display-wrapper > img {
     z-index: 1;
+    margin-top: 20px;
+    margin-left: 10px;
+    width: 105px;
+    height: auto;
 }
 
 .hero-slider--display {
@@ -1436,6 +1440,12 @@ footer {
     }
     .testimonial--text {
         font-size: 14px;
+    }
+    .hero-slider--display-wrapper > img {
+        margin-top: 0px;
+        margin-left: 0px;
+        width: 95px;
+        height: auto;
     }
     .benefit--image {
         width: 100%;
