@@ -270,8 +270,8 @@ window.addEventListener('next:initialized', function() {
     const colorSelect = document.getElementById('upsell-color');
     const addButton = document.getElementById('upsell-add-button');
     const skipButton = document.getElementById('upsell-skip-button');
-    const acceptUrl = document.querySelector('meta[name="next-upsell-accept-url"]')?.content || '/u/up03';
-    const declineUrl = document.querySelector('meta[name="next-upsell-decline-url"]')?.content || '/u/up03';
+    const acceptUrl = document.querySelector('meta[name="next-upsell-accept-url"]')?.content || '/lorax-pairs/u/up04';
+    const declineUrl = document.querySelector('meta[name="next-upsell-decline-url"]')?.content || '/lorax-pairs/u/up04';
     
     // Handle add to order button using next.addUpsell() SDK method
     if (addButton) {
