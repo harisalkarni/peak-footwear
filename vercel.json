@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/lorax-pairs/o/of04/",
+      "permanent": false
+    }
+  ]
+}

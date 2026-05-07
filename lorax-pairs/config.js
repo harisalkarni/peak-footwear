@@ -14,7 +14,9 @@ window.nextConfig = {
     },
     addressConfig: {
         defaultCountry: "US",
-        showCountries: ["US"],
+        // Add or remove country codes below to control which countries appear in checkout.
+        // Leave the array empty [] or remove showCountries entirely to show ALL countries.
+        showCountries: ["US", "CA", "GB", "AU", "NZ"],
     },
     googleMaps: {
         apiKey: "AIzaSyBmrv1QRE41P9FhFOTwUhRMGg6LcFH1ehs",
