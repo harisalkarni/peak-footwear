@@ -324,13 +324,17 @@ class TierController {
     const colors = window.next.getAvailableVariantAttributes(this.productId, 'color');
     const sizes = window.next.getAvailableVariantAttributes(this.productId, 'size');
 
-    // Use configured default color
-    // getAvailableVariantAttributes returns display names like "White & Pink" (with "&")
-    // CONFIG.defaults.color is a slug like "white-pink" (with "-"), so normalize before comparing
+    // Use configured default color.
+    // getAvailableVariantAttributes returns display names like "White & Pink" (with "&").
+    // All internal maps (CAMPAIGN_PACKAGE_MAP, CONFIG.colors.images, etc.) are keyed by slug
+    // like "white-pink", so we must convert the display name → slug before storing.
     const normalizeColorName = str => str.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, '-');
-    const defaultColor = colors.find(c =>
+    const defaultColorDisplay = colors.find(c =>
       normalizeColorName(c) === CONFIG.defaults.color.toLowerCase()
     ) || colors[0];
+    // Convert display name → slug (e.g. "White & Pink" → "white-pink")
+    const defaultColorSlug = COLOR_DISPLAY_TO_SLUG[defaultColorDisplay?.toLowerCase()]
+      || CONFIG.defaults.color;
 
     // Use configured default size if set
     let defaultSize = null;
@@ -348,8 +352,9 @@ class TierController {
 
       const v = this.selectedVariants.get(i);
 
-      // Set color to configured default
-      v.color = defaultColor;
+      // Store as slug — all downstream functions (_updateSizeOptionsForColor, _updateImage,
+      // _updateColorDropdown) expect the slug key, not the SDK display name.
+      v.color = defaultColorSlug;
 
       // Set size if configured
       if (defaultSize) {
