@@ -5,7 +5,7 @@ window.nextReady = window.nextReady || [];
 // For production, use your own configuration
 window.nextConfig = {
     apiKey: "Y95QvMDGe07BxWiBMNOMcVroKw1Iv0JbsJkB9DN8",
-    debug: true, // Always true since this file only loads in debug mode
+    debug: false,
     paymentConfig: {
         expressCheckout: {
             requireValidation: false,
