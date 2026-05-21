@@ -832,20 +832,35 @@ class TierController {
       await window.next.clearCart();
       console.log('Cart cleared');
 
+      // Calculate tier-based price per pair
+      // Tier 1 = base discount, Tier 2/3 = deeper discount shown in UI
+      const retail = CO02_CAMPAIGN_PRICING.retailPrice;
+      let tierPrice = null;
+      if (retail !== null) {
+        const totalDiscountPct = this.exitDiscountActive
+          ? (CONFIG.discounts.base[this.currentTier] + CONFIG.discounts.exit) / 100
+          : CONFIG.discounts.base[this.currentTier] / 100;
+        tierPrice = parseFloat((retail * (1 - totalDiscountPct)).toFixed(2));
+      }
+      console.log(`[Pricing] Tier ${this.currentTier} price per pair: $${tierPrice} (retail: $${retail}, exit: ${this.exitDiscountActive})`);
+
       // Build and add cart items using calculatePackageId
       let itemsAdded = 0;
       for (let i = 1; i <= this.currentTier; i++) {
         const v = this.selectedVariants.get(i);
         console.log(`Slot ${i} variants:`, v);
-        
+
         if (v?.color && v?.size) {
           // Use calculatePackageId function (same as bb01)
           const packageId = calculatePackageId(v.color, v.size, 1);
           console.log(`Slot ${i} calculated package ID:`, packageId);
-          
+
           if (packageId) {
-            console.log(`Adding item ${i}:`, { packageId, color: v.color, size: v.size });
-            await window.next.addItem({ packageId: packageId, quantity: 1 });
+            // Pass tier-based price so bundle pricing applies regardless of Site Offers
+            const addItemParams = { packageId: packageId, quantity: 1 };
+            if (tierPrice !== null) addItemParams.price = tierPrice;
+            console.log(`Adding item ${i}:`, addItemParams);
+            await window.next.addItem(addItemParams);
             itemsAdded++;
           } else {
             console.error(`Package ID calculation failed for slot ${i}:`, { color: v.color, size: v.size });
