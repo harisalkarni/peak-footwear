@@ -313,6 +313,18 @@ body {
 }
 .skip-link:hover { color: #555; }
 
+video#mainVideo{
+  width: 100%;
+
+}
+
+.speaker-icon {
+    width: 102px;
+    height: 102px;
+    margin-bottom: 18px;
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.3));
+  }
+
 /* ── FOOTER ── */
 .site-footer {
   margin-top: auto;

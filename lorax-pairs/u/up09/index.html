@@ -111,9 +111,42 @@
 
     <!-- VIDEO PLAYER -->
     <div class="video-outer">
-      <!-- <video class="Tech__video" playsinline="" crossorigin="anonymous" src="https://checkout.myrejuvaknee.com/8b2b1d73-ef01-4b16-8a4f-607dcef5fc78"></video> -->
-       <iframe width="560" height="315" src="https://www.youtube.com/embed/gCOd_4Sl2YU?si=M1tp6N99KriDpDQP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    </div>
+    <div class="video-wrapper">
+
+      <!-- Real video element — muted + autoplay, restarts + unmutes on click -->
+      <video
+        id="mainVideo"
+        class="main-video"
+        autoplay
+        muted
+        playsinline
+        loop
+        controls
+        poster=""
+        src="https://cdn.shopify.com/videos/c/o/v/88a3b82fb94f499491277e57638c03e8.mp4"
+      >
+        <!-- Drop your video src here, e.g.: -->
+        <!-- <source src="your-video.mp4" type="video/mp4"> -->
+        <!-- Fallback gradient background shows when no src is set -->
+      </video>
+
+      <!-- Teal mute overlay — click to restart from 0 and unmute -->
+      <div class="video-overlay" id="videoOverlay">
+        <!-- SVG speaker/mute icon matching screenshot exactly -->
+        <svg class="speaker-icon" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 19H18L30 10V42L18 33H10V19Z" fill="white" opacity="0.9"/>
+          <!-- mute lines (X) — shown when muted -->
+          <line id="muteLine1" x1="36" y1="20" x2="46" y2="30" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/>
+          <line id="muteLine2" x1="46" y1="20" x2="36" y2="30" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/>
+        </svg>
+        <div class="video-playing-text">
+          Your Video Is Playing<br>Click To Unmute
+        </div>
+      </div>
+
+    </div><!-- /video-wrapper -->
+
+  </div><!-- /video-outer -->
 
     <!-- DO THIS FIRST -->
     <p class="do-first">
@@ -157,3 +190,46 @@
 
 </body>
 </html>
+
+<script>
+  (function () {
+    var video   = document.getElementById('mainVideo');
+    var overlay = document.getElementById('videoOverlay');
+    var muteLine1 = document.getElementById('muteLine1');
+    var muteLine2 = document.getElementById('muteLine2');
+ 
+    /* ── Click overlay: restart from 0, unmute, hide overlay ── */
+    overlay.addEventListener('click', function () {
+      /* Restart video from the beginning */
+      video.currentTime = 0;
+ 
+      /* Unmute */
+      video.muted = false;
+ 
+      /* Make sure it's playing */
+      var playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function () {
+          /* Autoplay blocked — try muted first then unmute */
+          video.muted = true;
+          video.play().then(function () { video.muted = false; });
+        });
+      }
+ 
+      /* Fade out and hide the overlay */
+      overlay.style.transition = 'opacity 0.4s ease';
+      overlay.style.opacity    = '0';
+      setTimeout(function () {
+        overlay.style.display = 'none';
+      }, 420);
+    });
+ 
+    /* ── If video ends (non-loop mode), show overlay again ── */
+    video.addEventListener('ended', function () {
+      overlay.style.display  = '';
+      overlay.style.opacity  = '';
+      overlay.style.transition = '';
+      video.muted = true;
+    });
+  })();
+</script>
