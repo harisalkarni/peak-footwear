@@ -960,6 +960,11 @@ img {
     margin-bottom: 20px;
     font-size: 15px;
 }
+.test-aja {
+    color: #dea108;
+    font-weight: bold;
+    font-size: 18px;
+}
 
 .pf-modal-content p:last-child {
     margin-bottom: 0;

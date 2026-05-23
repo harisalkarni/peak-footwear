@@ -1,5 +1,5 @@
-// Next SDK Integration - Upsell Page (Lorax Pro - Nextcommerce)
-// Product ID: 12939
+// Next SDK Integration - Upsell Page (Lorax Pro Special Offer - Nextcommerce)
+// Product ID: 13273
 
 // ============================================
 // DYNAMIC CAMPAIGN PACKAGE MAP
@@ -31,20 +31,32 @@ const UP01_CAMPAIGN_DATA = {
 };
 
 /**
- * Parses every campaign package and extracts color + size → ref_id.
+ * Parses campaign offers/packages for product 13273 (Lorax Pro Special Offer)
+ * and extracts color + size → ref_id.
+ *
+ * Searches BOTH cd.offers (upsell products) and cd.packages — product 13273
+ * is a Special Offer so it lives in cd.offers in the 29next campaign.
  * Package names follow: "[Campaign Name] - [Color] / [Size]"
- * e.g. "Lorax Pro - Nextcommerce - White & Pink / US Women 8/8.5 - US Men 6/6.5"
- * Identical parsing logic to co02/index.js buildPackageMapFromCampaign().
+ * e.g. "Lorax Pro Special Offer - White & Pink / US Women 8/8.5 - US Men 6/6.5"
  */
 function buildUpsellPackageMap() {
     const cd = window.next?.getCampaignData?.();
-    if (!cd?.packages?.length) {
-        console.error('[UP01] No packages in campaign data. Check 29next campaign setup.');
+
+    // Search both offers (upsell products) and packages (main campaign products)
+    const allPackages = [...(cd?.offers || []), ...(cd?.packages || [])];
+
+    if (!allPackages.length) {
+        console.error('[UP01] No packages/offers in campaign data. Check 29next campaign setup.');
         return;
     }
 
     let mapped = 0;
-    cd.packages.forEach(pkg => {
+    allPackages.forEach(pkg => {
+        // Filter to product 13273 (Lorax Pro Special Offer) only
+        const matchesById   = pkg.product_id === 13273 || pkg.product_id === '13273';
+        const matchesByName = (pkg.name || '').toLowerCase().includes('special offer');
+        if (!matchesById && !matchesByName) return;
+
         const name = pkg.name || '';
 
         // Strip campaign prefix: find last " - " before the first " / "
@@ -76,9 +88,9 @@ function buildUpsellPackageMap() {
         mapped++;
     });
 
-    console.log(`[UP01] Built package map: ${mapped} packages across ${Object.keys(UP01_PACKAGE_MAP).length} colors`);
+    console.log(`[UP01] Built package map for product 13273: ${mapped} packages across ${Object.keys(UP01_PACKAGE_MAP).length} colors`);
     if (mapped === 0) {
-        console.error('[UP01] Zero packages mapped — check package names follow "[Campaign] - [Color] / [Size]"');
+        console.error('[UP01] Zero packages mapped for product 13273 — ensure it is added as an offer in the 29next campaign and package names include "Special Offer"');
     }
 
     // Apply live pricing to UP01_PRICING so updatePrices() uses campaign values
@@ -108,8 +120,8 @@ function calculatePackageId(color, size) {
 
 // Pricing Configuration (overwritten with live campaign values on next:initialized)
 const UP01_PRICING = {
-    retailPrice: 149.95,
-    offerPrice:  39.95
+    retailPrice: 139.98,
+    offerPrice:  29.99
 };
 
 // Update displayed prices
@@ -197,13 +209,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Colors that have extended sizes (US15-16)
     const extendedSizeColors = ['black', 'white-black', 'white-gray', 'blue', 'orange', 'white-blue'];
     
-    // Colors that DON'T have size 6 (US6 Women / US4 Men)
+    // Colors that DON'T have size 6 (US Women 6 - US Men 4)
     const noSize6Colors = ['orange'];
-    
+
     // Function to show/hide size options based on color
     function updateSizeOptions() {
         const selectedColor = colorSelect.value;
-        
+
         // Handle extended sizes (US15-16)
         const extendedSizeOptions = sizeSelect.querySelectorAll('.extended-size');
         extendedSizeOptions.forEach(option => {
@@ -215,20 +227,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 option.disabled = true;
                 // If currently selected extended size, reset to a valid option
                 if (option.selected) {
-                    sizeSelect.value = 'US8 Women / US6 Men';
+                    sizeSelect.value = 'US Women 8/8.5 - US Men 6/6.5';
                 }
             }
         });
-        
+
         // Handle size 6 (Orange doesn't have it)
-        const size6Option = sizeSelect.querySelector('option[value="US6 Women / US4 Men"]');
+        const size6Option = sizeSelect.querySelector('option[value="US Women 6 - US Men 4"]');
         if (size6Option) {
             if (noSize6Colors.includes(selectedColor)) {
                 size6Option.style.display = 'none';
                 size6Option.disabled = true;
                 // If currently selected size 6, reset to a valid option
                 if (size6Option.selected) {
-                    sizeSelect.value = 'US8 Women / US6 Men';
+                    sizeSelect.value = 'US Women 8/8.5 - US Men 6/6.5';
                 }
             } else {
                 size6Option.style.display = '';
@@ -371,11 +383,11 @@ window.addEventListener('next:initialized', function() {
                     window.UnifiedTrackingBridge.track.upsellAccepted({
                         packageId: packageId,
                         quantity: 1,
-                        productName: UP01_CAMPAIGN_DATA.productName || `Lorax Pro - Nextcommerce - ${color} - ${size}`,
+                        productName: UP01_CAMPAIGN_DATA.productName || `Lorax Pro Special Offer - ${color} - ${size}`,
                         price: UP01_CAMPAIGN_DATA.offerPrice ?? UP01_PRICING.offerPrice,
                         image: colorImageMap[color] || 'https://cdn.29next.store/media/peakfootwear/uploads/Lorax_-_Main.webp',
                         brand: 'Peak Footwear',
-                        sku: `lorax-pro-${color}-${size}`
+                        sku: `lorax-pro-special-offer-${color}-${size}`
                     });
                 }
                 
