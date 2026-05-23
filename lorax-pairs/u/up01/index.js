@@ -184,19 +184,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (colorSelect && previewImage) {
         colorSelect.addEventListener('change', function() {
             const selectedColor = this.value;
-            if (colorImageMap[selectedColor]) {
-                // Fade out
-                previewImage.style.opacity = '0';
-                
-                // Change image after fade
-                setTimeout(() => {
-                    previewImage.src = colorImageMap[selectedColor];
-                    // Fade in
-                    previewImage.style.opacity = '1';
-                }, 150);
-                
-                console.log('Color preview updated to:', selectedColor);
-            }
+            const newSrc = colorImageMap[selectedColor];
+            if (!newSrc) return;
+
+            // Fade out, then swap src once the transition is fully done
+            previewImage.style.opacity = '0';
+            previewImage.addEventListener('transitionend', function swapSrc() {
+                previewImage.removeEventListener('transitionend', swapSrc);
+                previewImage.src = newSrc;
+                previewImage.style.opacity = '1';
+            });
+
+            console.log('Color preview updated to:', selectedColor);
         });
     }
 });
