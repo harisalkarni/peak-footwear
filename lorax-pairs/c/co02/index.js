@@ -44,6 +44,11 @@ function buildPackageMapFromCampaign() {
 
   let mapped = 0;
   cd.packages.forEach(pkg => {
+    // Skip the Special Offer product (13273) — that's an upsell handled by up01, not the main checkout product
+    const isSpecialOffer = pkg.product_id === 13273 || pkg.product_id === '13273'
+                        || (pkg.name || '').toLowerCase().includes('special offer');
+    if (isSpecialOffer) return;
+
     const name = pkg.name || '';
 
     // Strip campaign-name prefix: everything up to and including the last " - " before "/"
@@ -370,12 +375,17 @@ class TierController {
 
   _getProductId() {
     const campaign = window.next.getCampaignData();
-    
-    // For Lorax Pro: All packages share the same product_id
-    // Different tiers/quantities have different ref_ids (package IDs) but same product_id
-    // We can use any package's product_id for variant attribute lookups
-    if (campaign?.packages?.[0]?.product_id) {
-      this.productId = campaign.packages[0].product_id;
+
+    // Use the first package that belongs to the normal Lorax Pro product —
+    // skip product 13273 (Special Offer) which is an upsell, not the main checkout product.
+    const mainPkg = campaign?.packages?.find(pkg => {
+      const isSpecialOffer = pkg.product_id === 13273 || pkg.product_id === '13273'
+                          || (pkg.name || '').toLowerCase().includes('special offer');
+      return !isSpecialOffer;
+    });
+
+    if (mainPkg?.product_id) {
+      this.productId = mainPkg.product_id;
       this.baseProductId = this.productId;
     }
   }
