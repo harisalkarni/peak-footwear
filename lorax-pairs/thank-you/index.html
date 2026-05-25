@@ -8,6 +8,13 @@
       'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
       })(window,document,'script','dataLayer','GTM-KN7HK4XF');</script>
     <!-- End Google Tag Manager -->
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-WX977KKW');</script>
+    <!-- End Google Tag Manager -->
 
     <!-- Start UpstackData Pixel -->
     <script src='https://prod2-cdn.upstackified.com/scripts/px/ups.min.js' async='true'></script>
@@ -70,9 +77,24 @@
     window.TriplePixelData={TripleName:"da0678-3.myshopify.com",ver:"2.17",plat:"SHOPIFY",isHeadless:true},function(W,H,A,L,E,_,B,N){function O(U,T,P,H,R){void 0===R&&(R=!1),H=new XMLHttpRequest,P?(H.open("POST",U,!0),H.setRequestHeader("Content-Type","text/plain")):H.open("GET",U,!0),H.send(JSON.stringify(P||{})),H.onreadystatechange=function(){4===H.readyState&&200===H.status?(R=H.responseText,U.includes("/first")?eval(R):P||(N[B]=R)):(299<H.status||H.status<200)&&T&&!R&&(R=!0,O(U,T-1,P))}}if(N=window,!N[H+"sn"]){N[H+"sn"]=1,L=function(){return Date.now().toString(36)+"_"+Math.random().toString(36)};try{A.setItem(H,1+(0|A.getItem(H)||0)),(E=JSON.parse(A.getItem(H+"U")||"[]")).push({u:location.href,r:document.referrer,t:Date.now(),id:L()}),A.setItem(H+"U",JSON.stringify(E))}catch(e){}var i,m,p;A.getItem('"!nC`')||(_=A,A=N,A[H]||(E=A[H]=function(t,e,a){return void 0===a&&(a=[]),"State"==t?E.s:(W=L(),(E._q=E._q||[]).push([W,t,e].concat(a)),W)},E.s="Installed",E._q=[],E.ch=W,B="configSecurityConfModel",N[B]=1,O("https://conf.config-security.com/model",5),i=L(),m=A[atob("c2NyZWVu")],_.setItem("di_pmt_wt",i),p={id:i,action:"profile",avatar:_.getItem("auth-security_rand_salt_"),time:m[atob("d2lkdGg=")]+":"+m[atob("aGVpZ2h0")],host:A.TriplePixelData.TripleName,plat:A.TriplePixelData.plat,url:window.location.href.slice(0,500),ref:document.referrer,ver:A.TriplePixelData.ver},O("https://api.config-security.com/event",5,p),O("https://api.config-security.com/first?host=da0678-3.myshopify.com&plat=SHOPIFY",5)))}}("","TriplePixel",localStorage);
     /* << TriplePixel :: end*/
     ~function TP() {
-      const email = "<DYNAMICALLY_INSERT_CUSTOMER_EMAIL>";
-      if (!email || !window.TriplePixel) {setTimeout(TP, 400); return;}
-      TriplePixel("Contact", {email: email});
+      // Resolve customer email from SDK order data or sessionStorage
+      function getOrderEmail() {
+        try {
+          // Try SDK order object first
+          if (window.next?.order?.customer?.email) return window.next.order.customer.email;
+          // Try sessionStorage 'next-order' (Nextcommerce SDK canonical storage)
+          const raw = sessionStorage.getItem('next-order');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            const order = parsed?.state?.order || parsed?.order || parsed;
+            if (order?.customer?.email) return order.customer.email;
+          }
+        } catch (e) {}
+        return null;
+      }
+      const email = getOrderEmail();
+      if (!email || !window.TriplePixel) { setTimeout(TP, 400); return; }
+      TriplePixel("Contact", { email: email });
     }()
     </script>
 
@@ -100,10 +122,10 @@
     <meta content="Thank You - Peak Footwear" property="twitter:title">
     <meta content="width=device-width, initial-scale=1" name="viewport">
 
-    <script src="https://cdn.jsdelivr.net/gh/NextCommerceCo/campaign-cart@v0.4.20/dist/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/NextCommerceCo/campaign-cart@v0.4.20/dist/loader.js" type="module"></script>
     
     <!-- NEXT Metatags -->
-    <meta name="next-api-key" content="6AFua4vXCfoDW8QzhquvrDSmdkGcpWyW3E84bVeZ">
+    <meta name="next-api-key" content="Y95QvMDGe07BxWiBMNOMcVroKw1Iv0JbsJkB9DN8">
     <meta name="next-page-type" content="receipt">
 
     <link href="thank-you/index.css" rel="stylesheet" type="text/css">
@@ -165,6 +187,10 @@
 <body>
     <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KN7HK4XF"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WX977KKW"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
    
@@ -416,7 +442,7 @@
     <script async src="https://campaigns.apps.29next.com/js/v1/campaign/"></script>
     <script>
       window.addEventListener('load', function () {
-        const apiKey = window.nextConfig?.apiKey || "6AFua4vXCfoDW8QzhquvrDSmdkGcpWyW3E84bVeZ";
+        const apiKey = window.nextConfig?.apiKey || "Y95QvMDGe07BxWiBMNOMcVroKw1Iv0JbsJkB9DN8";
         
         nextCampaign.config({
           apiKey: apiKey,

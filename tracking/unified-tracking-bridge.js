@@ -57,6 +57,7 @@
         transactionMap: new Map(),
         userIdStorage: 'peak_user_id',
         initialized: false,
+        receiptPurchaseFired: false,   // guard against double-trigger on receipt page
         platformsReady: { ga4: false, axon: false, meta: false, tripleWhale: false }
     };
 
@@ -98,7 +99,12 @@
         },
 
         getUserEmail() {
-            // Try cart data first
+            // Try SDK order data first (most reliable on receipt page)
+            const sdkOrder = this.getOrderFromSessionStorage();
+            if (sdkOrder?.customer?.email) return sdkOrder.customer.email;
+            if (window.next?.order?.customer?.email) return window.next.order.customer.email;
+
+            // Try cart data
             const cartData = sessionStorage.getItem('next_prospect_cart');
             if (cartData) {
                 try {
@@ -111,6 +117,25 @@
             // Try form fields
             const emailInput = document.querySelector('input[type="email"], input[name="email"]');
             return emailInput?.value || null;
+        },
+
+        /**
+         * Read the completed order from the Nextcommerce SDK's sessionStorage entry.
+         * Per Nextcommerce docs this is the most reliable source for the canonical
+         * Order ID / order number after a successful purchase.
+         * Key: 'next-order'  Shape: { state: { order: { id, number, ... } } }
+         */
+        getOrderFromSessionStorage() {
+            try {
+                const raw = sessionStorage.getItem('next-order');
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                // SDK stores: { state: { order: {...} } } — fall back to top-level shapes
+                return parsed?.state?.order || parsed?.order || parsed || null;
+            } catch (e) {
+                this.log('Error reading next-order from sessionStorage', e);
+                return null;
+            }
         },
 
         getCustomerInfo() {
@@ -504,8 +529,10 @@
             Utils.log('Processing purchase', orderData);
 
             // Store transaction data
-            const transactionId = orderData.id || orderData.ref_id || orderData.orderId || Date.now().toString();
+            // Use the human-readable order number as the canonical transaction ID so
+            // GA4 and Google Ads both use the same value for deduplication.
             const orderNumber = orderData.order_number || orderData.number;
+            const transactionId = orderNumber || orderData.id || orderData.ref_id || orderData.orderId || Date.now().toString();
 
             if (orderData.id || orderData.orderId) {
                 STATE.transactionMap.set(
@@ -554,8 +581,11 @@
 
             // Validation - warn if data looks suspicious
             if (unifiedItems.length === 0) {
-                Utils.log('WARNING: No items found for purchase event!');
-                return;
+                // Do NOT return early here.
+                // On the receipt/thank-you page the cart is already cleared after purchase,
+                // so an empty items array is expected. We still need to fire the conversion
+                // events (Google Ads, GA4, Axon, Upstack) with the total value.
+                Utils.log('WARNING: No items found for purchase event - proceeding with value-only tracking (receipt page cart is cleared)');
             }
             if (totalValue === 0) {
                 Utils.log('WARNING: Purchase total is $0!');
@@ -776,7 +806,16 @@
                     EventHandlers.beginCheckout(cartData);
                 }
             },
-            'dl_purchase': () => EventHandlers.purchase(eventData.ecommerce || eventData),
+            'dl_purchase': () => {
+                // dl_purchase carries transaction_id at BOTH the top level AND inside ecommerce.
+                // Merge them so EventHandlers.purchase() always has the canonical order number.
+                const topLevelId = eventData.transaction_id || eventData.order_number || eventData.number;
+                const purchaseData = {
+                    ...(eventData.ecommerce || eventData),
+                    ...(topLevelId ? { transaction_id: topLevelId, order_number: topLevelId } : {})
+                };
+                EventHandlers.purchase(purchaseData);
+            },
             'dl_accepted_upsell': () => EventHandlers.upsellAccepted(eventData.upsell || eventData)
         };
 
@@ -816,38 +855,50 @@
 
             window.next.on('order:completed', (orderData) => {
                 Utils.log('Order completed - firing purchase immediately', orderData);
-                
+
                 // CRITICAL: Fire purchase event IMMEDIATELY when order completes
                 // This ensures tracking happens even if user closes upsell page
                 EventHandlers.purchase(orderData);
-                
+
+                // Resolve the canonical Order Number for conversion deduplication.
+                // Priority: order_number / number (human-readable, e.g. "DQFDHG5E0")
+                // → sessionStorage next-order → internal id → timestamp fallback
+                const sdkOrder = Utils.getOrderFromSessionStorage();
+                const orderNumber = orderData.order_number
+                    || orderData.number
+                    || sdkOrder?.number
+                    || sdkOrder?.order_number
+                    || orderData.id
+                    || orderData.ref_id
+                    || orderData.orderId
+                    || Date.now().toString();
+
+                const orderValue    = parseFloat(orderData.total || orderData.grandTotal || 0);
+                const orderCurrency = orderData.currency || CONFIG.currency;
+
                 // Google Ads Conversion Tracking
                 if (typeof gtag !== 'undefined') {
-                    const transactionId = orderData.id || orderData.ref_id || orderData.orderId || Date.now().toString();
-                    const orderValue = parseFloat(orderData.total || orderData.grandTotal || 0);
-                    const orderCurrency = orderData.currency || CONFIG.currency;
-                    
                     gtag('event', 'conversion', {
                         'send_to': 'AW-11483263824/QvMGCNvWx5AZENDm0uMq',
                         'value': orderValue,
                         'currency': orderCurrency,
-                        'transaction_id': transactionId
+                        'transaction_id': orderNumber
                     });
-                    
                     Utils.log('Google Ads conversion tracked', {
-                        transaction_id: transactionId,
+                        transaction_id: orderNumber,
                         value: orderValue,
                         currency: orderCurrency
                     });
                 }
-                
+
                 // Store that we've tracked this order to prevent duplicate on thank-you page
                 try {
                     const orderStorage = {
                         orderData: orderData,
                         timestamp: Date.now(),
-                        processed: true, // Mark as already processed
-                        transactionId: orderData.id || orderData.ref_id || orderData.orderId
+                        processed: true,
+                        transactionId: orderNumber,
+                        orderNumber: orderNumber
                     };
                     localStorage.setItem('peak_initial_purchase', JSON.stringify(orderStorage));
                 } catch (e) {
@@ -858,7 +909,7 @@
             // Track upsell acceptances
             window.next.on('upsell:accepted', (upsellData) => {
                 Utils.log('Upsell accepted', upsellData);
-                //EventHandlers.upsellAccepted(upsellData);
+                EventHandlers.upsellAccepted(upsellData);
             });
         }
 
@@ -923,10 +974,18 @@
     }
 
     function handleReceiptPagePurchase() {
+        // Prevent double-execution: this function is called from both campaign:loaded
+        // (line ~836) AND the initialize() setTimeout on receipt pages (line ~1065).
+        if (STATE.receiptPurchaseFired) {
+            Utils.log('handleReceiptPagePurchase already ran this session — skipping duplicate call');
+            return;
+        }
+        STATE.receiptPurchaseFired = true;
+
         try {
-            // Check if we already tracked the initial purchase
+            // Check if we already tracked the initial purchase (fired at checkout)
             const initialPurchase = localStorage.getItem('peak_initial_purchase');
-            
+
             if (initialPurchase) {
                 const orderStorage = JSON.parse(initialPurchase);
                 const fiveMinutes = 5 * 60 * 1000;
@@ -934,41 +993,54 @@
 
                 if (isRecent && orderStorage.processed) {
                     Utils.log('Purchase already tracked at checkout, skipping duplicate on thank-you page');
-                    
-                    // Clean up old storage format if it exists
                     localStorage.removeItem('peak_pending_purchase');
-                    
-                    // Keep the record for a bit longer in case of page refresh
                     setTimeout(() => localStorage.removeItem('peak_initial_purchase'), 5000);
-                    return; // Don't fire duplicate purchase event
+                    return;
                 } else if (!isRecent) {
                     localStorage.removeItem('peak_initial_purchase');
                 }
             }
-            
-            // Fallback: If no stored purchase (old orders or direct navigation), track from window.next.order
-            Utils.log('No stored purchase found, attempting to track from window.next.order');
-            
-            if (window.next?.order) {
-                Utils.log('Firing purchase from window.next.order (fallback)', window.next.order);
-                EventHandlers.purchase(window.next.order);
-            } else {
-                // Wait a bit for Next SDK to populate order data
+
+            // Build order data — try sources in reliability order:
+            // 1. window.next.order  (SDK populated for receipt page)
+            // 2. sessionStorage 'next-order'  (most reliable per Nextcommerce docs)
+            // 3. Delayed retry for both
+            const tryFirePurchase = () => {
+                // Source 1: SDK order object
+                if (window.next?.order) {
+                    const sdkOrder = Utils.getOrderFromSessionStorage();
+                    // Merge canonical order number from sessionStorage if missing on SDK order
+                    const orderData = { ...window.next.order };
+                    if (!orderData.order_number && !orderData.number && sdkOrder) {
+                        orderData.order_number = sdkOrder.number || sdkOrder.order_number;
+                    }
+                    Utils.log('Firing purchase from window.next.order (with sessionStorage merge)', orderData);
+                    EventHandlers.purchase(orderData);
+                    return true;
+                }
+
+                // Source 2: sessionStorage 'next-order' (no SDK order object yet)
+                const sdkOrder = Utils.getOrderFromSessionStorage();
+                if (sdkOrder) {
+                    Utils.log('Firing purchase from sessionStorage next-order', sdkOrder);
+                    EventHandlers.purchase(sdkOrder);
+                    return true;
+                }
+
+                return false;
+            };
+
+            if (!tryFirePurchase()) {
+                Utils.log('Order data not ready yet, retrying in 1.5s...');
                 setTimeout(() => {
-                    if (window.next?.order) {
-                        Utils.log('Firing purchase from window.next.order (delayed fallback)', window.next.order);
-                        EventHandlers.purchase(window.next.order);
-                    } else {
-                        Utils.log('Warning: No order data available on receipt page');
+                    if (!tryFirePurchase()) {
+                        Utils.log('Warning: No order data available on receipt page after retry');
                     }
                 }, 1500);
             }
         } catch (e) {
             Utils.log('Error processing receipt page purchase', e);
-            // Last resort fallback
-            if (window.next?.order) {
-                EventHandlers.purchase(window.next.order);
-            }
+            if (window.next?.order) EventHandlers.purchase(window.next.order);
         }
     }
 
@@ -1071,8 +1143,8 @@
         }),
         track: EventHandlers,
         isPlatformReady: (platform) => STATE.platformsReady[platform],
-        getUserId: Utils.getUserId,
-        getUserEmail: Utils.getUserEmail,
+        getUserId: () => Utils.getUserId(),
+        getUserEmail: () => Utils.getUserEmail(),
         setDebug: (enabled) => {
             CONFIG.debug = enabled;
             Utils.log('Debug mode ' + (enabled ? 'enabled' : 'disabled'));

@@ -326,8 +326,8 @@ window.addEventListener('next:initialized', function() {
     const sizeSelect = document.getElementById('upsell-size');
     const addButton = document.getElementById('upsell-add-button');
     const skipButton = document.getElementById('upsell-skip-button');
-    const acceptUrl = document.querySelector('meta[name="next-upsell-accept-url"]')?.content || '/lorax-pairs/u/up02';
-    const declineUrl = document.querySelector('meta[name="next-upsell-decline-url"]')?.content || '/lorax-pairs/u/up02';
+    const acceptUrl = document.querySelector('meta[name="next-upsell-accept-url"]')?.content || '/lorax-pairs/u/up08';
+    const declineUrl = document.querySelector('meta[name="next-upsell-decline-url"]')?.content || '/lorax-pairs/u/up08';
     
     // Handle add to order button using next.addUpsell() SDK method
     if (addButton) {
