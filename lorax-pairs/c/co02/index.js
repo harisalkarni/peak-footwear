@@ -12,6 +12,10 @@
 // Populated by buildPackageMapFromCampaign() once the SDK fires 'next:initialized'
 const CAMPAIGN_PACKAGE_MAP = {};
 
+// Shipping product — automatically added for 1-pair orders only (product ID 13401)
+const SHIPPING_PRODUCT_ID = 13401;
+let SHIPPING_PACKAGE_REF_ID = null; // populated at runtime from campaign data
+
 // Color display name (as it appears in 29next campaign package names) → slug used in HTML
 const COLOR_DISPLAY_TO_SLUG = {
   'white & pink':  'white-pink',
@@ -49,6 +53,14 @@ function buildPackageMapFromCampaign() {
                         || (pkg.name || '').toLowerCase().includes('special offer');
     if (isSpecialOffer) return;
 
+    // Capture shipping product ref_id and exclude it from the color/size map
+    const isShipping = pkg.product_id === SHIPPING_PRODUCT_ID || pkg.product_id === String(SHIPPING_PRODUCT_ID);
+    if (isShipping) {
+      SHIPPING_PACKAGE_REF_ID = pkg.ref_id;
+      console.log('[Shipping] Found shipping product in campaign, ref_id:', SHIPPING_PACKAGE_REF_ID);
+      return;
+    }
+
     const name = pkg.name || '';
 
     // Strip campaign-name prefix: everything up to and including the last " - " before "/"
@@ -84,6 +96,47 @@ function buildPackageMapFromCampaign() {
   console.log('[PackageMap] Campaign pricing:', CO02_CAMPAIGN_PRICING);
   if (mapped === 0) {
     console.error('[PackageMap] Zero packages mapped — check that package names follow the format "[Campaign] - [Color] / [Size]"');
+  }
+
+  // If shipping product wasn't in cd.packages, also check cd.offers
+  // (29next stores products differently depending on how they were added to the campaign)
+  if (!SHIPPING_PACKAGE_REF_ID) {
+    const allOffers = cd.offers || [];
+    allOffers.forEach(offer => {
+      if (SHIPPING_PACKAGE_REF_ID) return; // already found
+
+      // Offer may be a flat package or have a nested packages array
+      const offerId   = offer.product_id;
+      const offerRef  = offer.ref_id;
+
+      if (offerId === SHIPPING_PRODUCT_ID || offerId === String(SHIPPING_PRODUCT_ID)) {
+        SHIPPING_PACKAGE_REF_ID = offerRef;
+        console.log('[Shipping] Found shipping product in campaign offers (flat), ref_id:', SHIPPING_PACKAGE_REF_ID);
+        return;
+      }
+
+      // Some offer structures nest packages inside
+      const nestedPkgs = offer.packages || [];
+      const match = nestedPkgs.find(p =>
+        p.product_id === SHIPPING_PRODUCT_ID || p.product_id === String(SHIPPING_PRODUCT_ID)
+      );
+      if (match) {
+        SHIPPING_PACKAGE_REF_ID = match.ref_id;
+        console.log('[Shipping] Found shipping product in campaign offers (nested), ref_id:', SHIPPING_PACKAGE_REF_ID);
+      }
+    });
+  }
+
+  // Diagnostic: if still not found, dump a summary of all campaign entries to help debug
+  if (!SHIPPING_PACKAGE_REF_ID) {
+    const pkgSummary = (cd.packages || []).map(p => ({ product_id: p.product_id, name: p.name, ref_id: p.ref_id }));
+    const offSummary = (cd.offers  || []).map(o => ({ product_id: o.product_id, name: o.name, ref_id: o.ref_id }));
+    console.warn(
+      '[Shipping] Product ID', SHIPPING_PRODUCT_ID, 'NOT found in campaign.',
+      '\n  cd.packages:', pkgSummary,
+      '\n  cd.offers:',   offSummary,
+      '\n  → Make sure product 13401 is added to the Lorax campaign in 29next admin.'
+    );
   }
 
   // Update tier prices in the DOM with live campaign values
@@ -377,11 +430,12 @@ class TierController {
     const campaign = window.next.getCampaignData();
 
     // Use the first package that belongs to the normal Lorax Pro product —
-    // skip product 13273 (Special Offer) which is an upsell, not the main checkout product.
+    // skip product 13273 (Special Offer) and 13401 (Shipping) — neither is the main checkout product.
     const mainPkg = campaign?.packages?.find(pkg => {
       const isSpecialOffer = pkg.product_id === 13273 || pkg.product_id === '13273'
                           || (pkg.name || '').toLowerCase().includes('special offer');
-      return !isSpecialOffer;
+      const isShipping = pkg.product_id === SHIPPING_PRODUCT_ID || pkg.product_id === String(SHIPPING_PRODUCT_ID);
+      return !isSpecialOffer && !isShipping;
     });
 
     if (mainPkg?.product_id) {
@@ -881,6 +935,21 @@ class TierController {
       }
 
       console.log(`Total items added: ${itemsAdded}`);
+
+      // Add $4.95 shipping product for 1-pair orders only (free shipping for 2+ pairs)
+      // IMPORTANT: pass price: 4.95 explicitly so promo codes / campaign discounts
+      // (e.g. PEAK26 10% off) cannot discount the shipping fee the same way they
+      // cannot discount shoe items that also have a price override.
+      if (this.currentTier === 1) {
+        if (SHIPPING_PACKAGE_REF_ID) {
+          console.log('[Shipping] 1-pair order — adding Standard Delivery ($4.95), ref_id:', SHIPPING_PACKAGE_REF_ID);
+          await window.next.addItem({ packageId: SHIPPING_PACKAGE_REF_ID, quantity: 1, price: 4.95 });
+        } else {
+          console.warn('[Shipping] 1-pair order but shipping ref_id not found — check product 13401 is added to this campaign.');
+        }
+      } else {
+        console.log(`[Shipping] ${this.currentTier}-pair order — free shipping, no shipping product added.`);
+      }
 
       // Wait for cart to update
       await new Promise(resolve => setTimeout(resolve, 500));
