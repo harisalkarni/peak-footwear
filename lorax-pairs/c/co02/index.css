@@ -1849,6 +1849,71 @@ button:focus-visible,
   justify-content: center !important;
 }
 
+.pf-tier-original2{
+    color:#000000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* ===================================================
+   FEATURED TIER — 2 Pairs highlight
+   =================================================== */
+
+/* Wrapper — adds the orange top ribbon */
+.pf-featured-li {
+  position: relative !important;
+}
+
+/* Top ribbon / banner */
+.pf-featured-banner {
+  background: var(--brand-primary) !important;
+  color: #ffffff !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  padding: 7px 16px !important;
+  border-radius: 10px 10px 0 0 !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+
+/* Card — square top corners so it connects flush with the ribbon */
+.pf-featured-li .pf-selector-group {
+  border-color: var(--brand-primary) !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  background-color: #effff4 !important;
+}
+
+/* Keep the orange border + warm glow on hover */
+.pf-featured-li .pf-selector-group:hover {
+  border-color: var(--brand-primary) !important;
+}
+
+/* Active/selected state */
+.pf-featured-li .pf-selector-group.active {
+  border-color: var(--brand-primary) !important;
+  background-color: #effff4 !important;
+}
+
+/* Slightly bigger product name */
+.pf-featured-li .pf-tier-name-text {
+  font-size: 20px !important;
+}
+
+/* Slightly bigger price */
+.pf-featured-li .pf-tier-price {
+  font-size: 32px !important;
+}
+
+/* Savings badge in accent orange instead of green */
+.pf-featured-li .pf-tier-savings {
+  color: #FF9425 !important;
+  font-weight: 700 !important;
+}
+
 .cs2-tips-main-text {
   font-size: 13px !important;
   font-weight: 500 !important;
