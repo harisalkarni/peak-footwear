@@ -1,0 +1,106 @@
+    <section class="shoe-feature-section">
+
+      <h2 style="text-align: center; margin-bottom: 3rem;">
+        Unmatched Comfort.<br> Your Feet Will Thank You.
+      </h2>
+
+      <div class="shoe-container">
+
+        <!-- TOP GRID -->
+        <div class="feature-grid">
+
+          <!-- LEFT -->
+          <div class="feature-col left-col">
+            <div class="feature-box">
+              <img src="https://offer.groundedfootwear.co/freedom/en/us/img/landing/feather_icon.svg" />
+              <h3>70% Lighter Than<br>Any Other Shoe</h3>
+              <p>
+                Lightness isn't just about comfort. It's about reclaiming energy and vitality.
+                Carrying less weight on your feet reduces energy use, promoting a natural stride
+                and unlocking agility.
+              </p>
+            </div>
+            <div class="feature-box">
+              <img src="https://offer.groundedfootwear.co/freedom/en/us/img/landing/breathable_icon.svg" />
+              <h3>Breathable Relief<br>for Your Feet</h3>
+              <p>
+                Our breathable design keeps your feet cool and dry, even after long days.
+                Airy fabrics let your feet breathe effortlessly, relieving joint stress and
+                providing essential relief for conditions like neuropathy and arthritis.
+              </p>
+            </div>
+          </div>
+
+          <!-- CENTER -->
+          <div class="shoe-center">
+            <img
+              src="https://offer.groundedfootwear.co/freedom/en/us/img/qualities-product-image-2.png"
+              alt="shoe"
+              class="main-shoe"
+            >
+            <div class="made-badge">
+              <img
+                src="https://offer.groundedfootwear.co/freedom/en/us/img/american-ownsed-seal.png"
+                alt="American Owned Seal"
+              >
+            </div>
+          </div>
+
+          <!-- RIGHT -->
+          <div class="feature-col right-col">
+            <div class="feature-box">
+              <img src="https://offer.groundedfootwear.co/freedom/en/us/img/landing/foot_arch_acon.svg" />
+              <h3>The Arch Support<br>You Need</h3>
+              <p>
+                Peak Footwear is ergonomically designed with arch support to align your
+                foot and body. Feel discomfort fade from toes to heels, freeing your knees,
+                hips, and lower back. Walk taller with timeless comfort.
+              </p>
+            </div>
+            <div class="feature-box">
+              <img src="https://offer.groundedfootwear.co/freedom/en/us/img/landing/heart_w_pulse_icon.svg" />
+              <h3>Boost Your<br>Circulation</h3>
+              <p>
+                Feel the difference as Peak Footwear boosts circulation, refreshing your
+                feet and legs, and revitalizing your entire stride. It's not just comfort;
+                it's a refreshing boost for your body.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- COLOR OPTIONS -->
+        <div class="color-grid">
+          <div class="color-card active">
+            <img src="https://offer.groundedfootwear.co/freedom/en/us/img/black_product-new.png" alt="">
+            <h4>Black Orca</h4>
+          </div>
+          <div class="color-card">
+            <img src="https://offer.groundedfootwear.co/freedom/en/us/img/white_product-new.png" alt="">
+            <h4>White Citrus</h4>
+          </div>
+          <div class="color-card new">
+            <span class="new-badge">NEW<br>COLORS</span>
+            <img src="https://offer.groundedfootwear.co/freedom/en/us/img/Edited%20tan%204.png" alt="">
+            <h4>Tan Sandstone</h4>
+          </div>
+          <div class="color-card new">
+            <span class="new-badge">NEW<br>COLORS</span>
+            <img src="https://offer.groundedfootwear.co/freedom/en/us/img/Edited%20white.png" alt="">
+            <h4>Grey</h4>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <script>
+    document.querySelectorAll('.color-card').forEach(card => {
+      card.addEventListener('click', function () {
+        document.querySelectorAll('.color-card').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    </script>

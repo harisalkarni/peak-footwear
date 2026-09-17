@@ -1,0 +1,50 @@
+footer {
+    font-size: 14px;
+    line-height: 28px;
+    color: #808080;
+    padding: 47px 0 12px 0;
+}
+
+.footer--logo {
+    margin-bottom: 32px;
+}
+
+.footer--links {
+    margin-bottom: 18px;
+}
+
+.footer--copyright {
+    padding: 13px 0 4px 0;
+    border-top: 1px solid #dfdfdf;
+}
+
+.footer--disclaimer {
+    background: #f7f7f9;
+    padding: 20px 0;
+    border-top: 1px solid #e5e5e5;
+}
+
+.footer--disclaimer p {
+    margin: 0 auto;
+    line-height: 1.6;
+    max-width: 900px;
+    padding: 0 20px;
+}
+
+.fixed-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+}
+
+.fixed-cta.hidden {
+    display: none;
+}
+
+.fixed-cta .cta {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
