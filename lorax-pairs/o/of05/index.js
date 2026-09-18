@@ -1,5 +1,5 @@
 // Next Commerce Campaign Integration
-const successURL = "/lorax-pairs/c/co02";
+const successURL = "/lorax-pairs/c/co04";
 
 function updateCheckoutLinks() {
   if (typeof campaign !== 'undefined' && campaign.getSuccessUrl) {
