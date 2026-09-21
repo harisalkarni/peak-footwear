@@ -1,3 +1,23 @@
+// ============================================
+// SAFETY: the accept link is <a href="#">, which resolves against
+// <base href="/snug-boot/"> to /snug-boot/ — a 404. Its real click handler is
+// bound inside the 'next:initialized' callback, so a failed SDK load would let
+// the browser follow that href. Swallow the default click as early as possible.
+// ============================================
+(function upsellAddHrefGuard() {
+    function guard() {
+        const addBtn = document.getElementById('upsell-add-button');
+        if (addBtn && addBtn.getAttribute('href') === '#') {
+            addBtn.addEventListener('click', function (e) { e.preventDefault(); });
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', guard);
+    } else {
+        guard();
+    }
+})();
+
 // Next SDK Integration - Upsell Page (Snug Boot Special - Nextcommerce)
 // Product ID: 15150 — this page sells ONLY this product.
 

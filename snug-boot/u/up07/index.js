@@ -89,6 +89,48 @@ function updatePrices() {
 }
 
 // ============================================
+// DECLINE HANDLER
+// Bound on DOMContentLoaded rather than 'next:initialized': declining only
+// navigates, so it must keep working even when the campaign SDK fails to load.
+// Previously this was bound inside the SDK callback, and the link's href="#"
+// resolved against <base href="/snug-boot/"> to /snug-boot/ — a 404 — whenever
+// that callback never ran.
+// ============================================
+
+let up07DeclineBound = false;
+
+function bindUp07Decline() {
+    if (up07DeclineBound) return;
+    const skipButton = document.getElementById('upsell-skip-button');
+    if (!skipButton) return;
+    up07DeclineBound = true;
+
+    skipButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        const declineUrl = document.querySelector('meta[name="next-upsell-decline-url"]')?.content
+            || skipButton.getAttribute('href')
+            || '/snug-boot/thank-you';
+        console.log('[UP07] Upsell declined — navigating to:', declineUrl);
+
+        if (window.UnifiedTrackingBridge?.track?.upsellDeclined) {
+            window.UnifiedTrackingBridge.track.upsellDeclined({
+                productName: UP07_CAMPAIGN_DATA.productName || 'Shipping Protection',
+                price: UP07_CAMPAIGN_DATA.offerPrice ?? UP07_PRICING.offerPrice,
+                page: 'up07'
+            });
+        }
+
+        window.location.href = declineUrl;
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindUp07Decline);
+} else {
+    bindUp07Decline();
+}
+
+// ============================================
 // SDK INITIALISATION
 // ============================================
 
@@ -154,23 +196,7 @@ window.addEventListener('next:initialized', function () {
         });
     }
 
-    // Decline — skip upsell
-    if (skipButton) {
-        skipButton.addEventListener('click', function (e) {
-            e.preventDefault();
-            console.log('[UP07] Upsell declined — navigating to:', declineUrl);
-
-            if (window.UnifiedTrackingBridge?.track?.upsellDeclined) {
-                window.UnifiedTrackingBridge.track.upsellDeclined({
-                    productName: UP07_CAMPAIGN_DATA.productName || 'Shipping Protection',
-                    price: UP07_CAMPAIGN_DATA.offerPrice ?? UP07_PRICING.offerPrice,
-                    page: 'up07'
-                });
-            }
-
-            window.location.href = declineUrl;
-        });
-    }
+    bindUp07Decline();
 
     console.log('[UP07] Upsell button handlers initialized');
 });
