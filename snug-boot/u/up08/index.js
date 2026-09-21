@@ -188,8 +188,8 @@ window.addEventListener('next:initialized', function() {
 
     const addButton  = document.getElementById('upsell-add-button');
     const skipButton = document.getElementById('upsell-skip-button');
-    const acceptUrl  = document.querySelector('meta[name="next-upsell-accept-url"]')?.content  || '/snug-boot/thank-you';
-    const declineUrl = document.querySelector('meta[name="next-upsell-decline-url"]')?.content || '/snug-boot/thank-you';
+    const acceptUrl  = document.querySelector('meta[name="next-upsell-accept-url"]')?.content  || '/snug-boot/u/up02';
+    const declineUrl = document.querySelector('meta[name="next-upsell-decline-url"]')?.content || '/snug-boot/u/up02';
 
     if (addButton) {
         addButton.addEventListener('click', async function(e) {
