@@ -4,3 +4,6 @@
 
 .DS_Store
 .vercel
+
+# Node dependencies (installed by Vercel at build time)
+node_modules/

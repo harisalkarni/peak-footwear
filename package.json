@@ -1,0 +1,9 @@
+{
+  "name": "peak-footwear",
+  "private": true,
+  "type": "module",
+  "description": "Static funnel pages. This package.json exists only so the root middleware.js can import @vercel/functions — there is no build step.",
+  "dependencies": {
+    "@vercel/functions": "^2.0.0"
+  }
+}

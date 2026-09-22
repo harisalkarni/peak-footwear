@@ -4,9 +4,9 @@
     {
       "name": "peak-footwear",
       "runtimeExecutable": "vercel",
-      "runtimeArgs": ["dev", "--yes"],
-      "port": 3000,
-      "autoPort": true
+      "runtimeArgs": ["dev", "--listen", "4000", "--yes"],
+      "port": 4000,
+      "autoPort": false
     }
   ]
 }
