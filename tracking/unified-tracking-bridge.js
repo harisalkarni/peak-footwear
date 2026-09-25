@@ -40,9 +40,15 @@
     // =================================================================
     // CONFIGURATION & STATE
     // =================================================================
+    // When the campaign's config.js turns on the SDK's analytics with its GTM provider,
+    // the SDK pushes dl_* events to the dataLayer itself (one dl_purchase per order).
+    // Pushing our own GA4-style copies as well would make GTM see every order twice.
+    const sdkAnalytics = window.nextConfig?.analytics;
+    const sdkFeedsGTM = Boolean(sdkAnalytics?.enabled && sdkAnalytics?.providers?.gtm?.enabled);
+
     const CONFIG = {
         platforms: {
-            ga4: { enabled: true, useGtag: true, useDataLayer: true },
+            ga4: { enabled: !sdkFeedsGTM, useGtag: true, useDataLayer: true },
             axon: { enabled: true, eventKey: window.nextConfig?.axon?.eventKey || 'YOUR_AXON_EVENT_KEY_HERE' },
             meta: { enabled: true },
             tripleWhale: { enabled: true }
@@ -192,6 +198,48 @@
             const timestamp = Date.now();
             const itemId = data?.ecommerce?.items?.[0]?.item_id || data?.packageId || data?.orderId || '';
             return `${eventName}_${timestamp}_${itemId}`;
+        },
+
+        // Purchases are reported from several places (order:completed at checkout,
+        // dl_purchase, the thank-you page), and the thank-you page can be reloaded.
+        // Remember every id an order is known by, across page loads, so each order
+        // is sent once. createEventId() can't do this: it includes the current time.
+        orderIdsFor(orderData) {
+            const nested = orderData?.order;
+            return [
+                nested?.number,
+                nested?.ref_id,
+                orderData?.order_number,
+                orderData?.number,
+                orderData?.transaction_id,
+                orderData?.ref_id,
+                orderData?.id,
+                orderData?.orderId
+            ].filter(id => id !== undefined && id !== null && id !== '').map(String);
+        },
+
+        isOrderAlreadyTracked(orderData) {
+            const ids = this.orderIdsFor(orderData);
+            if (!ids.length) return false;
+
+            let tracked = [];
+            try {
+                tracked = JSON.parse(localStorage.getItem('peak_tracked_orders') || '[]');
+            } catch (e) {
+                tracked = [];
+            }
+
+            if (ids.some(id => tracked.includes(id))) {
+                this.log(`Skipping purchase already tracked for order ${ids[0]}`);
+                return true;
+            }
+
+            try {
+                localStorage.setItem('peak_tracked_orders', JSON.stringify(tracked.concat(ids).slice(-100)));
+            } catch (e) {
+                this.log('Error storing tracked order ids', e);
+            }
+            return false;
         },
 
         isDuplicateEvent(eventId) {
@@ -523,8 +571,7 @@
         purchase(orderData) {
             if (!orderData) return;
 
-            const eventId = Utils.createEventId('purchase', orderData);
-            if (Utils.isDuplicateEvent(eventId)) return;
+            if (Utils.isOrderAlreadyTracked(orderData)) return;
 
             Utils.log('Processing purchase', orderData);
 
