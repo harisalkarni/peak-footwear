@@ -24,8 +24,12 @@ window.nextConfig = {
         enableAutocomplete: true
     },
     tracking: "auto",
+    // SDK analytics feeds GTM: it pushes dl_* events (one dl_purchase per order,
+    // dl_upsell_purchase per accepted upsell) to window.dataLayer. While this is on,
+    // the tracking bridge stops pushing its own GA4-style events so GTM sees each
+    // order once. The bridge still sends Axon, Upstack and TripleWhale.
     analytics: {
-        enabled: false,
+        enabled: true,
         mode: 'auto', // auto | manual | disabled
         providers: {
             nextCampaign: {
@@ -34,12 +38,14 @@ window.nextConfig = {
             gtm: {
                 enabled: true,
                 settings: {
-                    containerId: "GTM-KN7HK4XF",
+                    containerId: "GTM-WX977KKW", // the SDK pushes to dataLayer; it does not load the container
                     dataLayerName: "dataLayer"
                 }
             },
+            // Off: nothing sends Meta purchase events on this funnel today, and this pixel ID
+            // is not the one in GTM (216245368224726). Turn on once the right pixel is confirmed.
             facebook: {
-                enabled: true,
+                enabled: false,
                 settings: {
                     pixelId: "915124626650929"
                 }
